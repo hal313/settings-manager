@@ -1,0 +1,28 @@
+{
+  "name": "settings-manager",
+  "version": "0.0.0",
+  "authors": [
+    "john-github@rmdashrf.org"
+  ],
+  "description": "An interface for user setting repositories",
+  "main": "dist/SettingsManager.min.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "settings",
+    "repositories"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/hal313/settings-manager.git",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
+}

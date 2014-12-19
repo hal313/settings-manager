@@ -1,6 +1,6 @@
 // Build User: jghidiu
-// Version: 0.0.8
-// Build Date: Fri Dec 19 2014 01:49:37 GMT-0500 (Eastern Standard Time)
+// Version: 0.0.9
+// Build Date: Fri Dec 19 2014 01:52:11 GMT-0500 (Eastern Standard Time)
 
 // TODO: Safe callbacks
 // TODO: Externs
@@ -186,7 +186,7 @@
     };
 
     // Place the version as a member in the function
-    SettingsManager.version = '0.0.8';
+    SettingsManager.version = '0.0.9';
 
     return SettingsManager;
 

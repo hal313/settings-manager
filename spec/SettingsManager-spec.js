@@ -39,26 +39,6 @@
 
         // Backing store
 
-        describe('getDefaultSettings()', function() {
-
-            it('getDefaultSettings() is empty initially', function() {
-                this.settingsManager.getDefaultSettings().should.deep.equal({});
-            });
-
-            it('getDefaultSettings() is equal to initial default settings', function() {
-                var defaultSettings = {
-                    one: '1',
-                    child: {
-                        one: 'won'
-                    }
-                };
-
-                var settingsManager = new SettingsManager(defaultSettings);
-                settingsManager.getDefaultSettings().should.deep.equal(defaultSettings);
-            });
-
-        });
-
         describe('load()', function() {
 
             it('returns the empty object when no default settings are provided', function(done) {

@@ -1,6 +1,6 @@
 // Build User: jghidiu
-// Version: 0.0.9
-// Build Date: Fri Dec 19 2014 01:52:11 GMT-0500 (Eastern Standard Time)
+// Version: 0.0.10
+// Build Date: Fri Dec 19 2014 02:25:20 GMT-0500 (Eastern Standard Time)
 
 // TODO: Safe callbacks
 // TODO: Externs
@@ -136,18 +136,13 @@
         };
     };
 
-    var SettingsManager = function(defaultSettings, backingStore) {
+    var SettingsManager = function(backingStore) {
 
         if (!(this instanceof SettingsManager)) {
-            return new SettingsManager(defaultSettings, backingStore);
+            return new SettingsManager(backingStore);
         }
 
-        var _defaultSettings = defaultSettings || {};
         var _backingStore = backingStore || new InMemoryStore();
-
-        var _getDefaultSettings = function() {
-            return _defaultSettings;
-        };
 
         var _load = function(successCallback, errorCallback) {
             _backingStore.load(function(settings) {
@@ -177,7 +172,6 @@
         };
 
         return {
-            getDefaultSettings: _getDefaultSettings,
             load: _load,
             save: _save,
             clear: _clear
@@ -186,7 +180,7 @@
     };
 
     // Place the version as a member in the function
-    SettingsManager.version = '0.0.9';
+    SettingsManager.version = '0.0.10';
 
     return SettingsManager;
 

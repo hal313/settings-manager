@@ -136,18 +136,13 @@
         };
     };
 
-    var SettingsManager = function(defaultSettings, backingStore) {
+    var SettingsManager = function(backingStore) {
 
         if (!(this instanceof SettingsManager)) {
-            return new SettingsManager(defaultSettings, backingStore);
+            return new SettingsManager(backingStore);
         }
 
-        var _defaultSettings = defaultSettings || {};
         var _backingStore = backingStore || new InMemoryStore();
-
-        var _getDefaultSettings = function() {
-            return _defaultSettings;
-        };
 
         var _load = function(successCallback, errorCallback) {
             _backingStore.load(function(settings) {
@@ -177,7 +172,6 @@
         };
 
         return {
-            getDefaultSettings: _getDefaultSettings,
             load: _load,
             save: _save,
             clear: _clear

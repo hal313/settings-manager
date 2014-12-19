@@ -103,7 +103,6 @@
 
         var _load = function(successCallback) {
             if (_isFunction(successCallback)) {
-                // TODO: Use {successCallback.call(null, _settings) instead?
                 setTimeout(function() {successCallback.call(null, _settings);}, 0);
             }
         };

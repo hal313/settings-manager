@@ -41,7 +41,7 @@
 
         describe('load()', function() {
 
-            it('returns the empty object when no default settings are provided', function(done) {
+            it('returns the empty object when no settings are provided', function(done) {
                 this.settingsManager.load(function(settings) {
                     settings.should.deep.equal({});
                     done();

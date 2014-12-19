@@ -2,11 +2,6 @@
 // Version: ${build.version}
 // Build Date: ${build.date}
 
-// TODO: Safe callbacks
-// TODO: Externs
-// TODO: Take a store implementation (and default to chrome.storage.sync)
-
-
 (function(root, factory) {
     'use strict';
 
@@ -146,7 +141,6 @@
 
         var _load = function(successCallback, errorCallback) {
             _backingStore.load(function(settings) {
-                // Merge with defaults
                 if (_isFunction(successCallback)) {
                     setTimeout(function() {successCallback.call(null, settings);}, 0);
                 }

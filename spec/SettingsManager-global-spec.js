@@ -1,8 +1,6 @@
 /*global beforeEach,describe,it: true*/
 /*global SettingsManager: true*/
 
-// TODO: Also test amd and require
-
 /**
  * @author: jghidiu
  * Date: 2014-12-08
@@ -17,8 +15,12 @@
 
     describe('Lifecycle', function() {
 
-        it('SettingsManager should exist as a global', function () {
+        it('exists as a global', function () {
             expect(SettingsManager).to.be.a('function');
+        });
+
+        it('has a version', function () {
+            expect(SettingsManager.version).to.be.a('string');
         });
 
     });

@@ -1,6 +1,6 @@
 // Build User: jghidiu
 // Version: 0.0.8
-// Build Date: Wed Dec 17 2014 21:52:30 GMT-0500 (Eastern Standard Time)
+// Build Date: Fri Dec 19 2014 01:15:01 GMT-0500 (Eastern Standard Time)
 
 // TODO: Safe callbacks
 // TODO: Externs
@@ -48,7 +48,7 @@
             module.exports = factory();
         } else {
             // None
-            root.TemplateManager = factory();
+            root.SettingsManager = factory();
         }
     }
 
@@ -60,9 +60,55 @@
     };
 
 //    var _merge = function(object1, object2) {
-    var _merge = function() {
-        // TODO: Merge
-        return {};
+//        var result = {};
+//
+//        result = _mergeInto(result, object1);
+//        result = _mergeInto(result, object2);
+//
+//        return result;
+//    };
+
+    var _merge = function(object1, object2) {
+        // TODO: Merge (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+
+        var array = Array.isArray(object2);
+        var dst = array && [] || {};
+
+        if (array) {
+            object1 = object1 || [];
+            dst = dst.concat(object1);
+            object2.forEach(function(e, i) {
+                if (typeof dst[i] === 'undefined') {
+                    dst[i] = e;
+                } else if (typeof e === 'object') {
+                    dst[i] = _merge(object1[i], e);
+                } else {
+                    if (object1.indexOf(e) === -1) {
+                        dst.push(e);
+                    }
+                }
+            });
+        } else {
+            if (object1 && typeof object1 === 'object') {
+                Object.keys(object1).forEach(function (key) {
+                    dst[key] = object1[key];
+                });
+            }
+            Object.keys(object2).forEach(function (key) {
+                if (typeof object2[key] !== 'object' || !object2[key]) {
+                    dst[key] = object2[key];
+                }
+                else {
+                    if (!object1[key]) {
+                        dst[key] = object2[key];
+                    } else {
+                        dst[key] = _merge(object1[key], object2[key]);
+                    }
+                }
+            });
+        }
+
+        return dst;
     };
 
     var InMemoryStore = function() {
@@ -71,7 +117,8 @@
 
         var _load = function(successCallback) {
             if (_isFunction(successCallback)) {
-                setTimeout(function() {successCallback(_settings);}, 0);
+                // TODO: Use {successCallback.call(null, _settings) instead?
+                setTimeout(function() {successCallback.call(null, _settings);}, 0);
             }
         };
 
@@ -79,7 +126,7 @@
             _settings = _merge(_settings, settings);
 
             if (_isFunction(successCallback)) {
-                setTimeout(function() {successCallback();}, 0);
+                setTimeout(function() {successCallback.call(null);}, 0);
             }
         };
 
@@ -87,7 +134,7 @@
             _settings = {};
 
             if (_isFunction(successCallback)) {
-                setTimeout(function() {successCallback();}, 0);
+                setTimeout(function() {successCallback.call(null);}, 0);
             }
         };
 
@@ -115,51 +162,27 @@
             _backingStore.load(function(settings) {
                 // Merge with defaults
                 if (_isFunction(successCallback)) {
-                    setTimeout(function() {
-                        successCallback(_merge(_getDefaultSettings(), settings));
-                    }, 0);
+                    setTimeout(function() {successCallback.call(null, _merge(_getDefaultSettings(), settings));}, 0);
                 }
-
-
             }, errorCallback);
-
-//            chrome.storage.sync.get(_getDefaultSettings(), function(settings){
-//                if (chrome.runtime.lastError && _isFunction(errorCallback)) {
-//                    errorCallback();
-//                } else if (_isFunction(successCallback)) {
-//                    successCallback(settings);
-//                }
-//            });
         };
 
         var _save = function(settings, successCallback, errorCallback) {
-            _backingStore.save(settings, successCallback, errorCallback);
-
-//            chrome.storage.sync.set(settings, function() {
-//                if (chrome.runtime.lastError && _isFunction(errorCallback)) {
-//                    errorCallback();
-//                } else if(_isFunction(successCallback)) {
-//                    successCallback();
-//                }
-//            });
+            if (!settings) {
+                if (_isFunction(successCallback)) {
+                    setTimeout(function() {successCallback.call(null);}, 0);
+                }
+            } else if (settings && 'object' === typeof settings && !Array.isArray(settings)) {
+                _backingStore.save(settings, successCallback, errorCallback);
+            } else {
+                if (_isFunction(errorCallback)) {
+                    setTimeout(function() {errorCallback.call(null);}, 0);
+                }
+            }
         };
 
         var _clear = function(successCallback, errorCallback) {
             _backingStore.clear(successCallback, errorCallback);
-
-//            chrome.storage.sync.clear(function() {
-//                if (chrome.runtime.lastError && _isFunction(errorCallback)) {
-//                    errorCallback();
-//                } else {
-//                    chrome.storage.sync.set(_getDefaultSettings(), function() {
-//                        if(chrome.runtime.lastError && _isFunction(errorCallback)) {
-//                            errorCallback();
-//                        } else if(_isFunction(successCallback)) {
-//                            successCallback();
-//                        }
-//                    });
-//                }
-//            });
         };
 
         return {

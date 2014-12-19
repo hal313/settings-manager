@@ -94,7 +94,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/SettingsManager.min.js': ['src/**/*.js']
+                    'dist/SettingsManager.min.js': ['dist/SettingsManager.js']
                 }
             }
         },

@@ -162,7 +162,7 @@
             _backingStore.load(function(settings) {
                 // Merge with defaults
                 if (_isFunction(successCallback)) {
-                    setTimeout(function() {successCallback.call(null, _merge(_getDefaultSettings(), settings));}, 0);
+                    setTimeout(function() {successCallback.call(null, settings);}, 0);
                 }
             }, errorCallback);
         };

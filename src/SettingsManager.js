@@ -59,61 +59,52 @@
         return func && 'function' === typeof func;
     };
 
-//    var _merge = function(object1, object2) {
-//        var result = {};
-//
-//        result = _mergeInto(result, object1);
-//        result = _mergeInto(result, object2);
-//
-//        return result;
-//    };
-
-    var _merge = function(object1, object2) {
-        // TODO: Merge (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
-
-        var array = Array.isArray(object2);
-        var dst = array && [] || {};
-
-        if (array) {
-            object1 = object1 || [];
-            dst = dst.concat(object1);
-            object2.forEach(function(e, i) {
-                if (typeof dst[i] === 'undefined') {
-                    dst[i] = e;
-                } else if (typeof e === 'object') {
-                    dst[i] = _merge(object1[i], e);
-                } else {
-                    if (object1.indexOf(e) === -1) {
-                        dst.push(e);
-                    }
-                }
-            });
-        } else {
-            if (object1 && typeof object1 === 'object') {
-                Object.keys(object1).forEach(function (key) {
-                    dst[key] = object1[key];
-                });
-            }
-            Object.keys(object2).forEach(function (key) {
-                if (typeof object2[key] !== 'object' || !object2[key]) {
-                    dst[key] = object2[key];
-                }
-                else {
-                    if (!object1[key]) {
-                        dst[key] = object2[key];
-                    } else {
-                        dst[key] = _merge(object1[key], object2[key]);
-                    }
-                }
-            });
-        }
-
-        return dst;
-    };
-
     var InMemoryStore = function() {
 
         var _settings = {};
+
+        var _merge = function(object1, object2) {
+            // TODO: Merge (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+
+            var array = Array.isArray(object2);
+            var dst = array && [] || {};
+
+            if (array) {
+                object1 = object1 || [];
+                dst = dst.concat(object1);
+                object2.forEach(function(e, i) {
+                    if (typeof dst[i] === 'undefined') {
+                        dst[i] = e;
+                    } else if (typeof e === 'object') {
+                        dst[i] = _merge(object1[i], e);
+                    } else {
+                        if (object1.indexOf(e) === -1) {
+                            dst.push(e);
+                        }
+                    }
+                });
+            } else {
+                if (object1 && typeof object1 === 'object') {
+                    Object.keys(object1).forEach(function (key) {
+                        dst[key] = object1[key];
+                    });
+                }
+                Object.keys(object2).forEach(function (key) {
+                    if (typeof object2[key] !== 'object' || !object2[key]) {
+                        dst[key] = object2[key];
+                    }
+                    else {
+                        if (!object1[key]) {
+                            dst[key] = object2[key];
+                        } else {
+                            dst[key] = _merge(object1[key], object2[key]);
+                        }
+                    }
+                });
+            }
+
+            return dst;
+        };
 
         var _load = function(successCallback) {
             if (_isFunction(successCallback)) {
@@ -162,7 +153,7 @@
             _backingStore.load(function(settings) {
                 // Merge with defaults
                 if (_isFunction(successCallback)) {
-                    setTimeout(function() {successCallback.call(null, _merge(_getDefaultSettings(), settings));}, 0);
+                    setTimeout(function() {successCallback.call(null, settings);}, 0);
                 }
             }, errorCallback);
         };

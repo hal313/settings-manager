@@ -3,7 +3,7 @@
     "version": "0.0.11",
     "description": "A facade for manipulating settings in Chrome extensions using chrome.storage.sync",
     "scripts": {
-        "test": "grunt test"
+        "test": "grunt test-headless-all"
     },
     "devDependencies": {
         "grunt": "^0.4.5",

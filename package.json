@@ -1,7 +1,7 @@
 {
-    "name": "chrome-extension-settings-manager",
+    "name": "settings-manager",
     "version": "0.0.11",
-    "description": "A facade for manipulating settings in Chrome extensions using chrome.storage.sync",
+    "description": "A package for abstracting settings repositories",
     "homepage": "https://github.com/hal313/settings-manager",
     "bugs": {
         "url": "https://github.com/hal313/settings-manager/issues",
@@ -33,7 +33,7 @@
         ".jshintrc",
         ".travis.yml",
         ".yo-rc.json",
-        "Gruntfile",
+        "Gruntfile.js",
         "LICENSE",
         "package.json",
         "README.md",

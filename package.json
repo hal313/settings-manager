@@ -2,9 +2,47 @@
     "name": "chrome-extension-settings-manager",
     "version": "0.0.11",
     "description": "A facade for manipulating settings in Chrome extensions using chrome.storage.sync",
+    "homepage": "https://github.com/hal313/settings-manager",
+    "bugs": {
+        "url": "https://github.com/hal313/settings-manager/issues",
+        "email": "john-github@rmdashrf.org"
+    },
+    "license": "MIT",
+    "main": "dist/SettingsManager.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hal313/settings-manager.git"
+    },
+    "author": {
+        "name": "John Ghidiu",
+        "email": "john-github@rmdashrf.org",
+        "url": "https://github.com/hal313"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
     "scripts": {
         "test": "grunt test-headless-all"
     },
+    "files": [
+        "dist",
+        "spec",
+        "src",
+        "test",
+        ".bowerrc",
+        ".jshintrc",
+        ".travis.yml",
+        ".yo-rc.json",
+        "Gruntfile",
+        "LICENSE",
+        "package.json",
+        "README.md",
+        "replacements.json"
+    ],
+    "keywords": [
+        "settings repository",
+        "javascript"
+    ],
     "devDependencies": {
         "grunt": "^0.4.5",
         "grunt-contrib-watch": "^0.6.1",

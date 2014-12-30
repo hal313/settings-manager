@@ -59,7 +59,8 @@
         var _settings = {};
 
         var _merge = function(object1, object2) {
-            // TODO: Merge (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+            // Merge algorithm adapted from:
+            // (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
 
             var array = Array.isArray(object2);
             var dst = array && [] || {};

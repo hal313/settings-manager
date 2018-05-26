@@ -4,7 +4,7 @@
 
 [![Build Status](http://img.shields.io/travis/hal313/settings-manager/master.svg?style=flat-square)](https://travis-ci.org/hal313/settings-manager)
 [![NPM version](http://img.shields.io/npm/v/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
-[![Dependency Status](http://img.shields.io/david/hal313/settings-manager.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager
+[![Dependency Status](http://img.shields.io/david/hal313/settings-manager.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager)
 
 ## Introduction
 This is intended as a generic interface to an asynchronous setting API. Using this library allows for abstraction of the underlying settings. This package was intended for plugin development - in an effort to make plugins portable across platforms.

@@ -5,7 +5,7 @@ before_install:
   - npm install -g grunt-cli
   - npm install
 script:
-  - npm test
+  - grunt test-headless-source
 deploy:
   provider: npm
   email: "$NPM_EMAIL"

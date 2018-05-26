@@ -5,7 +5,13 @@ before_install:
   - npm install -g grunt-cli
   - npm install
 script:
-  - .travis/build.sh
+  - npm test
+deploy:
+  provider: npm
+  email: "$NPM_EMAIL"
+  api_key: "$NPM_TOKEN"
+  on:
+    tags: true
 notifications:
   email:
-    - john-github@rmdashrf.org
+    - $GITHUB_EMAIL

@@ -3,9 +3,9 @@ node_js:
   - '0.11'
 before_install:
   - npm install -g grunt-cli
-  - npm install -g bower
   - npm install
-  - bower install
+script:
+  - .travis/build.sh
 notifications:
   email:
     - john-github@rmdashrf.org

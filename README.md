@@ -59,3 +59,24 @@ Saves the settings. Requires the settings to save and takes an optional callback
 > clear([success][, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.
+
+# Deploying
+This is a basic script which can be used to build and deploy (to NPM) the project.
+
+```
+export VERSION=0.0.14
+git checkout -b release/$VERSION
+npm run dist
+npm version --no-git-tag-version patch
+git add package*
+git commit -m 'Version bump'
+git add dist/
+git commit -m 'Generated artifacts'
+git checkout master
+git merge --no-ff release/$VERSION
+git tag -a -m 'Tagged for release' $VERSION
+git branch -d release/$VERSION
+git checkout develop
+git merge --no-ff master
+git push --all && git push --tags
+```

@@ -2,11 +2,6 @@
 // Version: ${build.version}
 // Build Date: ${build.date}
 
-// TODO: Safe callbacks
-// TODO: Externs
-// TODO: Take a store implementation (and default to chrome.storage.sync)
-
-
 (function(root, factory) {
     'use strict';
 
@@ -56,72 +51,68 @@
     'use strict';
 
     var _isFunction = function(func) {
-        return func && 'function' === typeof func;
-    };
+        return !!func && 'function' === typeof func;
+    },
+    _merge = function(object1, object2) {
+        // From (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
 
-    var InMemoryStore = function() {
+        var array = Array.isArray(object2),
+            dst = array && [] || {};
+            // Merge algorithm adapted from:
+            // (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
 
-        var _settings = {};
-
-        var _merge = function(object1, object2) {
-            // TODO: Merge (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
-
-            var array = Array.isArray(object2);
-            var dst = array && [] || {};
-
-            if (array) {
-                object1 = object1 || [];
-                dst = dst.concat(object1);
-                object2.forEach(function(e, i) {
-                    if (typeof dst[i] === 'undefined') {
-                        dst[i] = e;
-                    } else if (typeof e === 'object') {
-                        dst[i] = _merge(object1[i], e);
-                    } else {
-                        if (object1.indexOf(e) === -1) {
-                            dst.push(e);
-                        }
+        if (array) {
+            object1 = object1 || [];
+            dst = dst.concat(object1);
+            object2.forEach(function(e, i) {
+                if (typeof dst[i] === 'undefined') {
+                    dst[i] = e;
+                } else if (typeof e === 'object') {
+                    dst[i] = _merge(object1[i], e);
+                } else {
+                    if (object1.indexOf(e) === -1) {
+                        dst.push(e);
                     }
-                });
-            } else {
-                if (object1 && typeof object1 === 'object') {
-                    Object.keys(object1).forEach(function (key) {
-                        dst[key] = object1[key];
-                    });
                 }
-                Object.keys(object2).forEach(function (key) {
-                    if (typeof object2[key] !== 'object' || !object2[key]) {
-                        dst[key] = object2[key];
-                    }
-                    else {
-                        if (!object1[key]) {
-                            dst[key] = object2[key];
-                        } else {
-                            dst[key] = _merge(object1[key], object2[key]);
-                        }
-                    }
+            });
+        } else {
+            if (object1 && typeof object1 === 'object') {
+                Object.keys(object1).forEach(function (key) {
+                    dst[key] = object1[key];
                 });
             }
+            Object.keys(object2).forEach(function (key) {
+                if (typeof object2[key] !== 'object' || !object2[key]) {
+                    dst[key] = object2[key];
+                }
+                else {
+                    if (!object1[key]) {
+                        dst[key] = object2[key];
+                    } else {
+                        dst[key] = _merge(object1[key], object2[key]);
+                    }
+                }
+            });
+        }
 
-            return dst;
-        };
+        return dst;
+    },
+    InMemoryStore = function() {
 
-        var _load = function(successCallback) {
+        var _settings = {},
+        _load = function(successCallback) {
             if (_isFunction(successCallback)) {
-                // TODO: Use {successCallback.call(null, _settings) instead?
                 setTimeout(function() {successCallback.call(null, _settings);}, 0);
             }
-        };
-
-        var _save = function(settings, successCallback) {
+        },
+        _save = function(settings, successCallback) {
             _settings = _merge(_settings, settings);
 
             if (_isFunction(successCallback)) {
                 setTimeout(function() {successCallback.call(null);}, 0);
             }
-        };
-
-        var _clear = function(successCallback) {
+        },
+        _clear = function(successCallback) {
             _settings = {};
 
             if (_isFunction(successCallback)) {
@@ -134,26 +125,22 @@
             save: _save,
             clear: _clear
         };
-    };
-
-    var SettingsManager = function(backingStore) {
+    },
+    SettingsManager = function(backingStore) {
 
         if (!(this instanceof SettingsManager)) {
             return new SettingsManager(backingStore);
         }
 
-        var _backingStore = backingStore || new InMemoryStore();
-
-        var _load = function(successCallback, errorCallback) {
+        var _backingStore = backingStore || new InMemoryStore(),
+        _load = function(successCallback, errorCallback) {
             _backingStore.load(function(settings) {
-                // Merge with defaults
                 if (_isFunction(successCallback)) {
                     setTimeout(function() {successCallback.call(null, settings);}, 0);
                 }
             }, errorCallback);
-        };
-
-        var _save = function(settings, successCallback, errorCallback) {
+        },
+        _save = function(settings, successCallback, errorCallback) {
             if (!settings) {
                 if (_isFunction(successCallback)) {
                     setTimeout(function() {successCallback.call(null);}, 0);
@@ -165,9 +152,8 @@
                     setTimeout(function() {errorCallback.call(null);}, 0);
                 }
             }
-        };
-
-        var _clear = function(successCallback, errorCallback) {
+        },
+        _clear = function(successCallback, errorCallback) {
             _backingStore.clear(successCallback, errorCallback);
         };
 

@@ -1,14 +1,5 @@
-/*global module:true */
+/* global module:true */
 
-// TODO: Implement code coverage
-// TODO: https://www.npmjs.com/package/package-json-to-readme
-// TODO: https://docs.npmjs.com/files/package.json
-// TODO: Include author in default resolvers
-
-/**
- * @author: jghidiu
- * Date: 2014-12-08
- */
 module.exports = function(grunt) {
     'use strict';
 
@@ -22,8 +13,6 @@ module.exports = function(grunt) {
     } else if ('linux' === process.platform) {
         _buildUser = process.env.USER;
     }
-
-
 
     // The file which has replacements in JSON format
     var _replacementFilePath = 'replacements.json';
@@ -55,22 +44,6 @@ module.exports = function(grunt) {
     };
 
     grunt.initConfig({
-        bump: {
-            options: {
-                files: ['bower.json', 'package.json'],
-                updateConfigs: [],
-                commit: false,
-                commitMessage: '-Tagged for release v%VERSION%',
-                commitFiles: ['bower.json', 'package.json'],
-                createTag: false,
-                tagName: '%VERSION%',
-                tagMessage: 'Version %VERSION%',
-                push: false,
-                pushTo: 'upstream',
-                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
-                globalReplace: false
-            }
-        },
         open: {
             source: {
                 path: 'test/source.html'
@@ -100,11 +73,25 @@ module.exports = function(grunt) {
         },
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
+                reporterOutput: ''
             },
-            source: ['src/SettingsManager.js'],
+            source: {
+                options: {
+                    jshintrc: '.jshintrc'
+                },
+                files: {
+                    src: ['src/SettingsManager.js']
+                }
+            },
             // Only lint the unmin file
-            dist: ['dist/SettingsManager.js']
+            dist: {
+                options: {
+                    jshintrc: '.jshintrc'
+                },
+                files: {
+                    src: ['dist/SettingsManager.js']
+                }
+            }
         },
         copy: {
             options: {
@@ -145,7 +132,6 @@ module.exports = function(grunt) {
 
 
     // Load NPM tasks
-    grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-open');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -155,11 +141,7 @@ module.exports = function(grunt) {
 
     // Register tasks
     grunt.registerTask('build', ['jshint:source']);
-    grunt.registerTask('build-dist', ['build', 'copy:dist', 'uglify:dist', 'jshint:dist']);
-    grunt.registerTask('dist', ['build-dist', 'mocha:all', 'bump:patch']);
-    grunt.registerTask('release-patch', ['dist'  /*TODO: check for non-added files, add package files, verify no other changes, commit, tag, push*/]);
-    grunt.registerTask('release-minor', ['dist', /*TODO: check for non-added files, add package files, verify no other changes, commit, tag */ 'bump:minor' /*TODO: add package files, commit, push*/ ]);
-    grunt.registerTask('release-major', ['dist', /*TODO: check for non-added files, add package files, verify no other changes, commit, tag */ 'bump:major' /*TODO: add package files, commit, push*/ ]);
+    grunt.registerTask('dist', ['build', 'copy:dist', 'uglify:dist', 'jshint:dist', 'mocha:all']);
     //
     // Test tasks
     //
@@ -167,9 +149,10 @@ module.exports = function(grunt) {
     grunt.registerTask('test-source', ['open:source', 'watch']);
     grunt.registerTask('test', ['test-source']); // Alias for test-source
     // Test the code in dist
-    grunt.registerTask('test-dist', ['build-dist', 'open:dist', 'watch']);
+    grunt.registerTask('test-dist', ['dist', 'open:dist', 'watch']);
     // Test the minified dist file
-    grunt.registerTask('test-dist-min', ['build-dist', 'open:distmin', 'watch']);
+    grunt.registerTask('test-dist-min', ['dist', 'open:distmin', 'watch']);
+    grunt.registerTask('test-all', ['test-source', 'test-dist', 'test-dist-min']);
     //
     // Headless test tasks
     //
@@ -177,11 +160,11 @@ module.exports = function(grunt) {
     grunt.registerTask('test-headless-source', ['mocha:source']);
     grunt.registerTask('test-headless', ['test-headless-source']);
     // Test the code in dist
-    grunt.registerTask('test-headless-dist', ['build-dist', 'mocha:dist']);
+    grunt.registerTask('test-headless-dist', ['dist', 'mocha:dist']);
     // Test the minified dist file
-    grunt.registerTask('test-headless-dist-min', ['build-dist', 'mocha:distmin']);
+    grunt.registerTask('test-headless-dist-min', ['dist', 'mocha:distmin']);
     // Test all the code (source and dist)
-    grunt.registerTask('test-headless-all', ['build-dist', 'mocha:all']);
+    grunt.registerTask('test-headless-all', ['dist', 'mocha:all']);
 
     // Default task
     grunt.registerTask('default', 'build');

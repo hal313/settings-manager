@@ -32,14 +32,19 @@ To run tests against the source code only, in a browser, watching file changes:
 npm test
 ```
 
-To run tests against the source code, the distributable code and the minimized distributable code all in a browser:
+To run tests against the source code in a browser, with reload:
 ```
-npm run test-all-watch
+npm run test-watch
 ```
 
-To run tests against the source code, the distributable code and the minimized distributable code all in a headless browser:
+To run tests against the source code in a headless browser, with reload:
 ```
-npm run test-all-headless
+npm run test-headless-watch
+```
+
+To run tests against the distributable code in a headless browser:
+```
+npm run test-dist-headless
 ```
 
 ## API:

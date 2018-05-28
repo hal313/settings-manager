@@ -1,6 +1,6 @@
 // Build User: User
-// Version: 0.0.13
-// Build Date: Sat May 26 2018 00:21:39 GMT-0400 (Eastern Daylight Time)
+// Version: 0.0.14
+// Build Date: Mon May 28 2018 16:25:34 GMT-0400 (Eastern Daylight Time)
 
 (function(root, factory) {
     'use strict';
@@ -166,7 +166,7 @@
     };
 
     // Place the version as a member in the function
-    SettingsManager.version = '0.0.13';
+    SettingsManager.version = '0.0.14';
 
     return SettingsManager;
 

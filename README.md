@@ -32,14 +32,19 @@ To run tests against the source code only, in a browser, watching file changes:
 npm test
 ```
 
-To run tests against the source code, the distributable code and the minimized distributable code all in a browser:
+To run tests against the source code in a browser, with reload:
 ```
-npm run test-all-watch
+npm run test-watch
 ```
 
-To run tests against the source code, the distributable code and the minimized distributable code all in a headless browser:
+To run tests against the source code in a headless browser, with reload:
 ```
-npm run test-all-headless
+npm run test-headless-watch
+```
+
+To run tests against the distributable code in a headless browser:
+```
+npm run test-dist-headless
 ```
 
 ## API:
@@ -59,3 +64,24 @@ Saves the settings. Requires the settings to save and takes an optional callback
 > clear([success][, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.
+
+# Deploying
+This is a basic script which can be used to build and deploy (to NPM) the project.
+
+```
+export VERSION=0.0.14
+git checkout -b release/$VERSION
+npm run dist
+npm version --no-git-tag-version patch
+git add package*
+git commit -m 'Version bump'
+git add dist/
+git commit -m 'Generated artifacts'
+git checkout master
+git merge --no-ff release/$VERSION
+git tag -a -m 'Tagged for release' $VERSION
+git branch -d release/$VERSION
+git checkout develop
+git merge --no-ff master
+git push --all && git push --tags
+```

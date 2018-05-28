@@ -230,7 +230,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test-build-min-watch',          ['test-build-min', 'watch:build-min']);
     // Test all build files (including source)
     grunt.registerTask('test-build-all',                ['test-source', 'test-build', 'test-build-min']);
-    grunt.registerTask('test-build-all-watch',          ['test-build-all', 'watch:noop']);//['test-build-all', 'watch']);
+    grunt.registerTask('test-build-all-watch',          ['test-build-all', 'watch:noop']);
 
     //
     // Test the code in dist

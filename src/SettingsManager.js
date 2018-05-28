@@ -11,7 +11,7 @@
         define(factory);
     } else {
         // Node
-        if (undefined !== typeof exports) {
+        if ('undefined' !== typeof exports) {
             module.exports = factory();
         } else {
             // None
@@ -69,7 +69,7 @@
 
         return dst;
     },
-    InMemoryStore = function() {
+    InMemoryStore = function InMemoryStore() {
 
         var _settings = {},
         _load = function(successCallback) {
@@ -98,7 +98,7 @@
             clear: _clear
         };
     },
-    SettingsManager = function(backingStore) {
+    SettingsManager = function SettingsManager(backingStore) {
 
         if (!(this instanceof SettingsManager)) {
             return new SettingsManager(backingStore);

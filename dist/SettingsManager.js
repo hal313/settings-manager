@@ -1,6 +1,6 @@
 // Build User: User
 // Version:    0.0.15
-// Build Date: Tue Jun 12 2018 23:43:24 GMT-0400 (Eastern Daylight Time)
+// Build Date: Wed Jun 13 2018 00:02:10 GMT-0400 (Eastern Daylight Time)
 
 (function (root, factory) {
     'use strict';
@@ -22,46 +22,58 @@
 })(this, function () {
     'use strict';
 
+    /**
+     * Determines if a value is a function.
+     *
+     * @param {Object} func the function to test
+     * @returns {boolean} true, if func is a Function
+     */
     var isFunction = function isFunction(func) {
         return !!func && 'function' === typeof func;
     },
-        merge = function merge(object1, object2) {
+        /**
+         * Merges two objects; members of the second object take precedence over the first object.
+         *
+         * @param {Object} target an object to merge to
+         * @returns {Object} the target object, populated with the source object's members
+         */
+        merge = function merge(target, source) {
             // From (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
 
-            var array = Array.isArray(object2),
+            var array = Array.isArray(source),
                 dest = array && [] || {};
                 // Merge algorithm adapted from:
                 // (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
 
             if (array) {
-                object1 = object1 || [];
-                dest = dest.concat(object1);
-                object2.forEach(function onItem(e, i) {
+                target = target || [];
+                dest = dest.concat(target);
+                source.forEach(function onItem(e, i) {
                     if (typeof dest[i] === 'undefined') {
                         dest[i] = e;
                     } else if (typeof e === 'object') {
-                        dest[i] = merge(object1[i], e);
+                        dest[i] = merge(target[i], e);
                     } else {
-                        if (object1.indexOf(e) === -1) {
+                        if (target.indexOf(e) === -1) {
                             dest.push(e);
                         }
                     }
                 });
             } else {
-                if (object1 && typeof object1 === 'object') {
-                    Object.keys(object1).forEach(function (key) {
-                        dest[key] = object1[key];
+                if (target && typeof target === 'object') {
+                    Object.keys(target).forEach(function (key) {
+                        dest[key] = target[key];
                     });
                 }
-                Object.keys(object2).forEach(function (key) {
-                    if (typeof object2[key] !== 'object' || !object2[key]) {
-                        dest[key] = object2[key];
+                Object.keys(source).forEach(function (key) {
+                    if (typeof source[key] !== 'object' || !source[key]) {
+                        dest[key] = source[key];
                     }
                     else {
-                        if (!object1[key]) {
-                            dest[key] = object2[key];
+                        if (!target[key]) {
+                            dest[key] = source[key];
                         } else {
-                            dest[key] = merge(object1[key], object2[key]);
+                            dest[key] = merge(target[key], source[key]);
                         }
                     }
                 });
@@ -69,14 +81,28 @@
 
             return dest;
         },
+        /**
+         * A store implementation in memory.
+         */
         InMemoryStore = function InMemoryStore() {
 
             var emptySettings = {},
+                /**
+                 * Loads values.
+                 *
+                 * @param {Function} successCallback the callback invoked on success (with parameter {})
+                 */
                 load = function load(successCallback) {
                     if (isFunction(successCallback)) {
                         setTimeout(function onTimeout() {successCallback.call(null, emptySettings);}, 0);
                     }
                 },
+                /**
+                 * Saves values.
+                 *
+                 * @param {Object} settings the settings to save
+                 * @param {Function} successCallback the success callback to invoke on success
+                 */
                 save = function save(settings, successCallback) {
                     emptySettings = merge(emptySettings, settings);
 
@@ -84,6 +110,11 @@
                         setTimeout(function onTimeout() {successCallback.call(null);}, 0);
                     }
                 },
+                /**
+                 * Clears values.
+                 *
+                 * @param {Function} successCallback the success callback to invoke on success
+                 */
                 clear = function clear(successCallback) {
                     emptySettings = {};
 
@@ -98,13 +129,24 @@
                 clear: clear
             };
         },
+        /**
+         * Implementation for SettingsManager, a class for storing settings.
+         *
+         * @param {Object} [backingStore] optional backing store to wrap
+         */
         SettingsManager = function SettingsManager(backingStore) {
 
+            // Make sure this is a new instance
             if (!(this instanceof SettingsManager)) {
                 return new SettingsManager(backingStore);
             }
 
             var normalizedBackingStore = backingStore || new InMemoryStore(),
+                /**
+                 * Loads values.
+                 *
+                 * @param {Function} successCallback the callback invoked on success (invoked with the settings)
+                 */
                 load = function load(successCallback, errorCallback) {
                     normalizedBackingStore.load(function onLoad(settings) {
                         if (isFunction(successCallback)) {
@@ -114,6 +156,12 @@
                         }
                     }, errorCallback);
                 },
+                /**
+                 * Saves values.
+                 *
+                 * @param {Object} settings the settings to save
+                 * @param {Function} successCallback the success callback to invoke on success
+                 */
                 save = function save(settings, successCallback, errorCallback) {
                     if (!settings) {
                         if (isFunction(successCallback)) {
@@ -131,6 +179,11 @@
                         }
                     }
                 },
+                /**
+                 * Clears values.
+                 *
+                 * @param {Function} successCallback the success callback to invoke on success
+                 */
                 clear = function clear(successCallback, errorCallback) {
                     normalizedBackingStore.clear(successCallback, errorCallback);
                 };

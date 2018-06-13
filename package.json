@@ -1,6 +1,6 @@
 {
   "name": "settings-manager",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "bugs": {

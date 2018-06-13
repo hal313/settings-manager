@@ -5,8 +5,8 @@ before_install:
   - npm install -g grunt-cli
   - npm install
 script:
-  - npm run build
-  - npm run test-dist-headless
+  - npm run dist
+  - npm run test
 deploy:
   provider: npm
   email: "$NPM_EMAIL"

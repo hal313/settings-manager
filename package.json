@@ -1,6 +1,6 @@
 {
   "name": "settings-manager",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "bugs": {
@@ -19,12 +19,34 @@
     "john-github@rmdashrf.org"
   ],
   "scripts": {
-    "test": "grunt test-source",
-    "test-watch": "grunt test-source-watch",
-    "test-headless-watch": "grunt test-headless-source-watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "grunt build",
-    "dist": "grunt dist",
-    "test-dist-headless": "grunt test-dist-headless-nobuild"
+    "build:watch": "grunt build:watch",
+    "dist": "grunt dist"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "build/reports",
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 90,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "dist/**/*.js",
+      "!**/node_modules/**",
+      "!**/test/**"
+    ],
+    "roots": [
+      "src",
+      "test"
+    ],
+    "resetModules": true
   },
   "keywords": [
     "settings repository",
@@ -32,14 +54,12 @@
     "javascript"
   ],
   "devDependencies": {
-    "chai": "^4.1.2",
-    "grunt": "^0.4.5",
-    "grunt-contrib-copy": "^0.7.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha": "^0.4.11",
-    "grunt-open": "^0.2.3",
-    "mocha": "^5.2.0"
+    "grunt": "^1.0.3",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "jest": "^23.1.0",
+    "jshint-stylish": "^2.2.1"
   }
 }

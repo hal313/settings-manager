@@ -16,9 +16,14 @@ npm install
 ```
 
 ### Building
-A build will generate usable artifacts in the `dist/`. Invoke a build like so:
+A build will check the source code and place code in the build\dist folder.
 ```
 npm run build
+```
+
+To run a build on source code changes:
+```
+npm run build:watch
 ```
 
 To build distributable artifacts (which includes a minimized version as well as burning in build-time data):
@@ -27,25 +32,16 @@ npm run dist
 ```
 
 ### Running Tests
-To run tests against the source code only, in a browser, watching file changes:
+To run tests against the source code and dist folder (including coverage):
 ```
 npm test
 ```
 
-To run tests against the source code in a browser, with reload:
+To run tests against the source code and dist folder (including coverage), with reload:
 ```
-npm run test-watch
-```
-
-To run tests against the source code in a headless browser, with reload:
-```
-npm run test-headless-watch
+npm run test:watch
 ```
 
-To run tests against the distributable code in a headless browser:
-```
-npm run test-dist-headless
-```
 
 ## API:
 
@@ -72,6 +68,7 @@ This is a basic script which can be used to build and deploy (to NPM) the projec
 export VERSION=0.0.14
 git checkout -b release/$VERSION
 npm run dist
+npm run test
 npm version --no-git-tag-version patch
 git add package*
 git commit -m 'Version bump'

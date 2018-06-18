@@ -1,6 +1,6 @@
 {
   "name": "settings-manager",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "bugs": {
@@ -48,12 +48,17 @@
     ],
     "resetModules": true
   },
+  "auto-changelog": {
+    "unreleased": false,
+    "commitLimit": false
+  },
   "keywords": [
     "settings repository",
     "settings",
     "javascript"
   ],
   "devDependencies": {
+    "auto-changelog": "^1.7.1",
     "grunt": "^1.0.3",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",

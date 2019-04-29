@@ -1,6 +1,6 @@
 // Build User: unknown
-// Version:    1.0.0
-// Build Date: Mon Apr 29 2019 16:29:26 GMT-0400 (EDT)
+// Version:    1.0.1
+// Build Date: Mon Apr 29 2019 16:41:32 GMT-0400 (EDT)
 
 (function (root, factory) {
     'use strict';
@@ -197,7 +197,7 @@
         };
 
     // Place the version as a member in the function
-    SettingsManager.version = '1.0.0';
+    SettingsManager.version = '1.0.1';
 
     return SettingsManager;
 

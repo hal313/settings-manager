@@ -1,6 +1,6 @@
 {
   "name": "settings-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "bugs": {
@@ -18,7 +18,7 @@
     "build": "grunt build",
     "build:watch": "grunt build:watch",
     "dist": "grunt dist",
-    "release": "ext/scripts/release.sh"
+    "release": "ext/scripts/release.sh --skip-push"
   },
   "jest": {
     "collectCoverage": true,

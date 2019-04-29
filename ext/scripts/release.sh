@@ -35,6 +35,9 @@ if [ `git status --porcelain | wc -l` -ne "0" -a "${SKIP_DIRTY_WORKSPACE_CHECK}"
     exit;
 fi
 
+## TODO: Check for exsisting branch
+## TODO: Check for exsisting tag
+
 ## Get the next version
 NEXT_VERSION=$(node -p -e "let currentVersion = require('./package.json').version, parts = currentVersion.split('.'); parts[2] = Number.parseInt(parts[2])+1; parts.join('.');")
 

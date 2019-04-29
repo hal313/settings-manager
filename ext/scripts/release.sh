@@ -40,20 +40,36 @@ NEXT_VERSION=$(node -p -e "let currentVersion = require('./package.json').versio
 
 ## Create a new branch
 git checkout -b release/${NEXT_VERSION}
+
+## Build, test and commit the dist
+npm run dist
+npm run test
+git add dist/
+git commit -m 'Generated artifacts'
+
 ## Bump the patch version (and do not commit the changes)
 npm version --no-git-tag-version patch
-## Bump the version
-git commit -a -m 'Version bump'
+git commit -a 'Version bump'
+
+## Update the changelog
+npx auto-changelog -p
+git add CHANGELOG.md
+git commit -m 'Updated changelog'
+
 ## Merge into master
 git checkout master
 git pull origin master
 git merge --no-ff release/${NEXT_VERSION}
+
 ## Tag and delete the release branch
 git tag -a -m 'Tagged for release' ${NEXT_VERSION}
 git branch -d release/${NEXT_VERSION}
+
 ## Merge down to develop
 git checkout develop
 git merge --no-ff master
+
+## Push the dist to CI (for deploy)
 if [ "${SKIP_PUSH}" != "true" ]; then
     git push --all && git push --tags
 fi

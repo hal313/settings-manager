@@ -1,5 +1,7 @@
 #!/bin/sh
 
+## TODO: Fail on error; tee all output to log
+
 ## Release script, inspired from:
 ## https://gist.github.com/hal313/490e4aeaa591eeca14d2570ecb660f67
 

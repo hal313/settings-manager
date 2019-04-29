@@ -49,7 +49,7 @@ git commit -m 'Generated artifacts'
 
 ## Bump the patch version (and do not commit the changes)
 npm version --no-git-tag-version patch
-git commit -a 'Version bump'
+git commit -a -m 'Version bump'
 
 ## Update the changelog
 npx auto-changelog -p

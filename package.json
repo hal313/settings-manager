@@ -1,6 +1,6 @@
 {
   "name": "settings-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "bugs": {
@@ -12,18 +12,13 @@
     "type": "git",
     "url": "https://github.com/hal313/settings-manager.git"
   },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "authors": [
-    "john-github@rmdashrf.org"
-  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "grunt build",
     "build:watch": "grunt build:watch",
-    "dist": "grunt dist"
+    "dist": "grunt dist",
+    "release": "ext/scripts/release.sh"
   },
   "jest": {
     "collectCoverage": true,
@@ -38,9 +33,7 @@
     },
     "collectCoverageFrom": [
       "src/**/*.js",
-      "dist/**/*.js",
-      "!**/node_modules/**",
-      "!**/test/**"
+      "dist/**/*.js"
     ],
     "roots": [
       "src",
@@ -58,13 +51,13 @@
     "javascript"
   ],
   "devDependencies": {
-    "auto-changelog": "^1.7.1",
-    "grunt": "^1.0.3",
+    "auto-changelog": "^1.13.0",
+    "grunt": "^1.0.4",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "jest": "^23.1.0",
+    "jest": "^24.7.1",
     "jshint-stylish": "^2.2.1"
   }
 }

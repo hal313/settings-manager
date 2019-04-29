@@ -58,13 +58,13 @@
     "javascript"
   ],
   "devDependencies": {
-    "auto-changelog": "^1.7.1",
-    "grunt": "^1.0.3",
+    "auto-changelog": "^1.13.0",
+    "grunt": "^1.0.4",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "jest": "^23.1.0",
+    "jest": "^24.7.1",
     "jshint-stylish": "^2.2.1"
   }
 }

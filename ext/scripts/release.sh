@@ -43,9 +43,9 @@ git checkout -b release/${NEXT_VERSION}
 
 ## Build, test and commit the dist
 npm run dist
-npm run test
+npm test
 git add dist/
-git commit -a -m 'Generated artifacts'
+git commit -m 'Generated artifacts'
 
 ## Bump the patch version (and do not commit the changes)
 npm version --no-git-tag-version patch

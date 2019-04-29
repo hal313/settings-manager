@@ -1,49 +1,66 @@
 # [settings-manager](https://github.com/hal313/settings-manager)
 
-> A simple facade for user settings repositories
+> A facade for user settings repositories.
 
 [![Build Status](http://img.shields.io/travis/hal313/settings-manager/master.svg?style=flat-square)](https://travis-ci.org/hal313/settings-manager)
 [![NPM version](http://img.shields.io/npm/v/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
 [![Dependency Status](http://img.shields.io/david/hal313/settings-manager.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager)
 
 ## Introduction
-This is intended as a generic interface to an asynchronous setting API. Using this library allows for abstraction of the underlying settings. This package was intended for plugin development - in an effort to make plugins portable across platforms.
+
+This is intended as a generic interface to an asynchronous setting API. Using this library allows for abstraction of the underlying settings. This package was intended for plugin development in order to make plugins portable across platforms.
 
 ## Setup
-```
-npm install -g grunt
+
+```bash
 npm install
 ```
 
 ### Building
+
 A build will check the source code and place code in the build\dist folder.
-```
+
+```bash
 npm run build
 ```
 
 To run a build on source code changes:
-```
+
+```bash
 npm run build:watch
 ```
 
 To build distributable artifacts (which includes a minimized version as well as burning in build-time data):
-```
+
+```bash
 npm run dist
 ```
 
 ### Running Tests
+
 To run tests against the source code and dist folder (including coverage):
-```
+
+```bash
 npm test
 ```
 
 To run tests against the source code and dist folder (including coverage), with reload:
-```
+
+```bash
 npm run test:watch
 ```
 
+## Build a Release
 
-## API:
+This is a basic script which can be used to build and deploy (to NPM) the project.
+
+```bash
+npm run release
+```
+
+Releases to the NPM registry are handled by Travis CI. Pushing `master` to GitHub will trigger a build and deploy to the NPM registry.
+
+## API
 
 > new SettingsManager([backing_store])
 
@@ -60,28 +77,3 @@ Saves the settings. Requires the settings to save and takes an optional callback
 > clear([success][, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.
-
-# Deploying
-This is a basic script which can be used to build and deploy (to NPM) the project.
-
-```
-export VERSION=0.0.14
-git checkout -b release/$VERSION
-npm run dist
-npm run test
-npm version --no-git-tag-version patch
-git add package*
-git commit -m 'Version bump'
-npx auto-changelog -p
-git add CHANGELOG.md
-git commit -m 'Updated changelog'
-git add dist/
-git commit -m 'Generated artifacts'
-git checkout master
-git merge --no-ff release/$VERSION
-git tag -a -m 'Tagged for release' $VERSION
-git branch -d release/$VERSION
-git checkout develop
-git merge --no-ff master
-git push --all && git push --tags
-```

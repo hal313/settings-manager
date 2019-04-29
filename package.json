@@ -18,7 +18,7 @@
     "build": "grunt build",
     "build:watch": "grunt build:watch",
     "dist": "grunt dist",
-    "release": "ext/scripts/release.sh"
+    "release": "ext/scripts/release.sh --skip-push"
   },
   "jest": {
     "collectCoverage": true,

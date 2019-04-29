@@ -58,7 +58,11 @@ This is a basic script which can be used to build and deploy (to NPM) the projec
 npm run release
 ```
 
-Releases to the NPM registry are handled by Travis CI. Pushing `master` to GitHub will trigger a build and deploy to the NPM registry.
+Releases to the NPM registry are handled by Travis CI. Pushing `master` to GitHub will trigger a build and deploy to the NPM registry. The release script will NOT push to the repository. When pushing, tags should be included:
+
+```bash
+git push --all && git push --tags
+```
 
 ## API
 

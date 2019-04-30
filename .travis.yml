@@ -9,6 +9,7 @@ before_install:
   - npm install
 script:
   - npm test
+  - node -v
 deploy:
   provider: npm
   email: "$NPM_EMAIL"

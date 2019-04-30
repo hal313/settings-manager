@@ -9,7 +9,6 @@ before_install:
   - npm install
 script:
   - npm test
-  - node -v
 
 notifications:
   email:
@@ -19,7 +18,6 @@ jobs:
   include:
     - stage: npm release
       node_js: '10'
-      script: echo "Deploying $TRAVIS_TAG"
       deploy:
         provider: npm
         email: "$NPM_EMAIL"

@@ -1,9 +1,11 @@
 #!/bin/sh
 
-## TODO: Fail on error; tee all output to log
+## Bail on error
+set -e
 
 ## Release script, inspired from:
 ## https://gist.github.com/hal313/490e4aeaa591eeca14d2570ecb660f67
+
 
 ## Parse the command line arguments
 while [[ $# -gt 0 ]]; do
@@ -25,23 +27,36 @@ while [[ $# -gt 0 ]]; do
         exit
         ;;
         *)    # Unknown command line option
-        echo "Unknown command line option: \"$1\"; try running \"`basename $0` --help\""
+        (>&2 echo "Unknown command line option: \"$1\"; try running \"`basename $0` --help\"")
         exit;
         ;;
     esac
 done
 
-## Check the workspace status unless the user
+
+## Check the workspace status unless the user opts out
 if [ `git status --porcelain | wc -l` -ne "0" -a "${SKIP_DIRTY_WORKSPACE_CHECK}" != true ]; then
-    echo "Workspace is dirty, cannot complete a release"
+    (>&2 echo "Workspace is dirty, cannot complete a release")
     exit;
 fi
 
-## TODO: Check for exsisting branch
-## TODO: Check for exsisting tag
 
 ## Get the next version
 NEXT_VERSION=$(node -p -e "let currentVersion = require('./package.json').version, parts = currentVersion.split('.'); parts[2] = Number.parseInt(parts[2])+1; parts.join('.');")
+
+
+## Pre-checks for release
+##
+## Check for existing branch
+if [ `git branch -l | grep release/${NEXT_VERSION} | wc -l` -ne "0" ]; then
+    (>&2 echo "Release branch release/${NEXT_VERSION} exists, cannot complete a release")
+fi
+##
+## Check for existing tag
+if [ `git tag | grep ${NEXT_VERSION} | wc -l` -ne "0" ]; then
+    (>&2 echo "Tag ${NEXT_VERSION} exists, cannot complete a release")
+fi
+
 
 ## Create a new branch
 git checkout -b release/${NEXT_VERSION}
@@ -62,19 +77,17 @@ git add CHANGELOG.md
 git commit -m 'Updated changelog'
 
 ## Merge into master
-## TODO: Figure out how to accept default message
 git checkout master
 git pull origin master
-git merge --no-ff release/${NEXT_VERSION}
+git merge --no-ff -m "Merge branch 'release/${NEXT_VERSION}' into 'master'" release/${NEXT_VERSION}
 
 ## Tag and delete the release branch
 git tag -a -m 'Tagged for release' ${NEXT_VERSION}
 git branch -d release/${NEXT_VERSION}
 
 ## Merge down to develop
-## TODO: Figure out how to accept default message
 git checkout develop
-git merge --no-ff master
+git merge --no-ff -m "Merge branch 'master' into 'develop'" master
 
 ## Push the dist to CI (for deploy)
 if [ "${SKIP_PUSH}" != "true" ]; then

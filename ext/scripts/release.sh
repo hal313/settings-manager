@@ -77,19 +77,17 @@ git add CHANGELOG.md
 git commit -m 'Updated changelog'
 
 ## Merge into master
-## TODO: Figure out how to accept default message
 git checkout master
 git pull origin master
-git merge --no-ff release/${NEXT_VERSION}
+git merge --no-ff -m "Merge branch 'release/${NEXT_VERSION}' into 'master'" release/${NEXT_VERSION}
 
 ## Tag and delete the release branch
 git tag -a -m 'Tagged for release' ${NEXT_VERSION}
 git branch -d release/${NEXT_VERSION}
 
 ## Merge down to develop
-## TODO: Figure out how to accept default message
 git checkout develop
-git merge --no-ff master
+git merge --no-ff -m "Merge branch 'master' into 'develop'" master
 
 ## Push the dist to CI (for deploy)
 if [ "${SKIP_PUSH}" != "true" ]; then

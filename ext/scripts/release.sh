@@ -1,5 +1,7 @@
 #!/bin/sh
 
+## TODO: Fail on error; tee all output to log
+
 ## Release script, inspired from:
 ## https://gist.github.com/hal313/490e4aeaa591eeca14d2570ecb660f67
 
@@ -60,6 +62,7 @@ git add CHANGELOG.md
 git commit -m 'Updated changelog'
 
 ## Merge into master
+## TODO: Figure out how to accept default message
 git checkout master
 git pull origin master
 git merge --no-ff release/${NEXT_VERSION}
@@ -69,6 +72,7 @@ git tag -a -m 'Tagged for release' ${NEXT_VERSION}
 git branch -d release/${NEXT_VERSION}
 
 ## Merge down to develop
+## TODO: Figure out how to accept default message
 git checkout develop
 git merge --no-ff master
 

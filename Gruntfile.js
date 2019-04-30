@@ -62,7 +62,6 @@ module.exports = function(grunt) {
             },
             build: {
                 files: {
-                    // TODO: Should this be STAGE_DIR
                     [STAGE_DIR + '/SettingsManager.min.js']: [STAGE_DIR + '/SettingsManager.js']
                 }
             }

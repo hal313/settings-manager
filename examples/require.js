@@ -1,17 +1,7 @@
-// import { SettingsManager } from './src/SettingsManager';
+// require the SettingsManager
 let SettingsManager = require('../dist/SettingsManager').SettingsManager;
 
-function onSettingsLoaded(settings) {
-    console.log('loaded', settings);
-}
-function onSettingsSaved() {
-    console.log('settings saved');
-}
-
-function onError(error) {
-    console.log('error:', error);
-}
-
+// Create an instance of the SettingsManager
 let settingsManager = new SettingsManager();
 
 // Start with a load
@@ -35,3 +25,14 @@ settingsManager.load(function onLoad(settings) {
         }, onError);
     }, onError);
 }, onError);
+
+// Handler functions
+function onSettingsLoaded(settings) {
+    console.log('loaded', settings);
+}
+function onSettingsSaved() {
+    console.log('settings saved');
+}
+function onError(error) {
+    console.log('error:', error);
+}

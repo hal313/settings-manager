@@ -3,7 +3,7 @@
 > A facade for user settings repositories.
 
 [![Build Status](http://img.shields.io/travis/hal313/settings-manager/master.svg?style=flat-square)](https://travis-ci.org/hal313/settings-manager)
-[![NPM version](http://img.shields.io/npm/v/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
+[![NPM version](http://img.shields.io/npm/v/@hal313/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
 [![Dependency Status](http://img.shields.io/david/hal313/settings-manager.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager)
 
 ## Introduction

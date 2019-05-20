@@ -1,204 +1,226 @@
-// Build User: ${build.user}
-// Version:    ${build.version}
-// Build Date: ${build.date}
+/**
+ * Determines if a value is a function.
+ *
+ * @param {*} candidate the candidate to test
+ * @returns {boolean} true, if candidate is a Function
+ */
+export function isFunction(candidate) {
+    return 'function' === typeof candidate;
+}
 
-(function (root, factory) {
-    'use strict';
+/**
+ * Determines if a value is an object.
+ *
+ * @param {*} candidate the candidate to test
+ * @returns {boolean} true, if candidate is an object
+ */
+export function isObject(candidate) {
+    return null !== candidate && 'object' === typeof candidate && !isArray(candidate);
+}
 
-    // Determine the module system (if any)
-    if ('function' === typeof define && define.amd) {
-        // AMD
-        define(factory);
+/**
+ * Determines if a value is an array.
+ *
+ * @param {*} candidate the candidate to test
+ * @returns {boolean} true, if candidate is an array
+ */
+export function isArray(candidate) {
+    return Array.isArray(candidate);
+}
+
+/**
+ * Merges two objects; members of the second object take precedence over the first object.
+ *
+ * @param {Object} target an object to merge to
+ * @returns {Object} the target object, populated with the source object's members
+ */
+export function merge(target, source) {
+    // Merge algorithm adapted from:
+    // From (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+
+    let array = isArray(source),
+        dest = array && [] || {};
+
+    if (array) {
+        target = target || [];
+        dest = dest.concat(target);
+        source.forEach(function onItem(e, i) {
+            if ('undefined' === typeof dest[i]) {
+                dest[i] = e;
+            } else if ('object' === typeof e) {
+                dest[i] = merge(target[i], e);
+            } else {
+                if (target.indexOf(e) === -1) {
+                    dest.push(e);
+                }
+            }
+        });
     } else {
-        // Node
-        if ('undefined' !== typeof exports) {
-            module.exports = factory();
-        } else {
-            // None
-            root.SettingsManager = factory();
+        if (isObject(target)) {
+            Object.keys(target || {}).forEach(function (key) {
+                dest[key] = target[key];
+            });
         }
+        Object.keys(source || {}).forEach(function (key) {
+            if (!isObject(source[key]) || !source[key]) {
+                dest[key] = source[key];
+            }
+            else {
+                if (!target[key]) {
+                    dest[key] = source[key];
+                } else {
+                    dest[key] = merge(target[key], source[key]);
+                }
+            }
+        });
     }
 
-})(this, function () {
-    'use strict';
+    return dest;
+}
+
+/**
+ * Executes a function.
+ *
+ * @param {Function} fn the function to execute
+ * @param {*[]} args an array of arguments to execute the function with
+ * @param {Object} [context] the optional context
+ * @returns {*} the return value of the function execution, or null if no function is provided
+ */
+export function execute(fn, args, context) {
+    if (isFunction(fn)) {
+        return fn.apply(context || {}, args);
+    }
+    return null;
+}
+
+/**
+ * Executes a function asynchronously.
+ *
+ * @param {Function} fn the function to execute
+ * @param {*[]} args an array of arguments to execute the function with
+ * @param {Object} [context] the optional context
+ */
+export function executeAsync(fn, args, context) {
+    if (isFunction(fn)) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    resolve(fn.apply(context || {}, args));
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+    return null;
+}
+
+/**
+ * A store implementation in memory.
+ */
+export class InMemoryStore {
+
+    //this.settings = {};
 
     /**
-     * Determines if a value is a function.
-     *
-     * @param {Object} func the function to test
-     * @returns {boolean} true, if func is a Function
+     * Creates an instance.
      */
-    var isFunction = function isFunction(func) {
-        return !!func && 'function' === typeof func;
-    },
-        /**
-         * Merges two objects; members of the second object take precedence over the first object.
-         *
-         * @param {Object} target an object to merge to
-         * @returns {Object} the target object, populated with the source object's members
-         */
-        merge = function merge(target, source) {
-            // From (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+    constructor() {
+        this.settings = {};
+    }
 
-            var array = Array.isArray(source),
-                dest = array && [] || {};
-                // Merge algorithm adapted from:
-                // (http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically)
+    /**
+     * Loads values.
+     *
+     * @param {Function} successCallback the callback invoked on success (with parameter {})
+     */
+    load(successCallback) {
+        executeAsync(successCallback, [merge({}, this.settings)]);
+    };
 
-            if (array) {
-                target = target || [];
-                dest = dest.concat(target);
-                source.forEach(function onItem(e, i) {
-                    if (typeof dest[i] === 'undefined') {
-                        dest[i] = e;
-                    } else if (typeof e === 'object') {
-                        dest[i] = merge(target[i], e);
-                    } else {
-                        if (target.indexOf(e) === -1) {
-                            dest.push(e);
-                        }
-                    }
-                });
-            } else {
-                if (target && typeof target === 'object') {
-                    Object.keys(target).forEach(function (key) {
-                        dest[key] = target[key];
-                    });
-                }
-                Object.keys(source).forEach(function (key) {
-                    if (typeof source[key] !== 'object' || !source[key]) {
-                        dest[key] = source[key];
-                    }
-                    else {
-                        if (!target[key]) {
-                            dest[key] = source[key];
-                        } else {
-                            dest[key] = merge(target[key], source[key]);
-                        }
-                    }
-                });
-            }
+    /**
+     * Saves values.
+     *
+     * @param {Object} settings the settings to save
+     * @param {Function} successCallback the success callback to invoke on success
+     */
+    save(settings, successCallback) {
+        // Assign the settings
+        this.settings = merge(this.settings, settings);
 
-            return dest;
-        },
-        /**
-         * A store implementation in memory.
-         */
-        InMemoryStore = function InMemoryStore() {
+        // Invoke the callback
+        executeAsync(successCallback, [merge({}, this.settings)]);
+    };
 
-            var emptySettings = {},
-                /**
-                 * Loads values.
-                 *
-                 * @param {Function} successCallback the callback invoked on success (with parameter {})
-                 */
-                load = function load(successCallback) {
-                    if (isFunction(successCallback)) {
-                        setTimeout(function onTimeout() {successCallback.call(null, emptySettings);}, 0);
-                    }
-                },
-                /**
-                 * Saves values.
-                 *
-                 * @param {Object} settings the settings to save
-                 * @param {Function} successCallback the success callback to invoke on success
-                 */
-                save = function save(settings, successCallback) {
-                    emptySettings = merge(emptySettings, settings);
+    /**
+     * Clears values.
+     *
+     * @param {Function} successCallback the success callback to invoke on success
+     */
+    clear(successCallback) {
+        this.settings = {};
 
-                    if (isFunction(successCallback)) {
-                        setTimeout(function onTimeout() {successCallback.call(null);}, 0);
-                    }
-                },
-                /**
-                 * Clears values.
-                 *
-                 * @param {Function} successCallback the success callback to invoke on success
-                 */
-                clear = function clear(successCallback) {
-                    emptySettings = {};
+        executeAsync(successCallback, [{}]);
+    };
 
-                    if (isFunction(successCallback)) {
-                        setTimeout(function onTimeout() {successCallback.call(null);}, 0);
-                    }
-                };
+};
 
-            return {
-                load: load,
-                save: save,
-                clear: clear
-            };
-        },
-        /**
-         * Implementation for SettingsManager, a class for storing settings.
-         *
-         * @param {Object} [backingStore] optional backing store to wrap
-         */
-        SettingsManager = function SettingsManager(backingStore) {
+/**
+ * Implementation for SettingsManager, a class for storing settings.
+ *
+ * @param {Object} [backingStore] optional backing store to wrap
+ */
+export class SettingsManager {
 
-            // Make sure this is a new instance
-            if (!(this instanceof SettingsManager)) {
-                return new SettingsManager(backingStore);
-            }
+    // The backing store to use
+    // backingStore;
 
-            var normalizedBackingStore = backingStore || new InMemoryStore(),
-                /**
-                 * Loads values.
-                 *
-                 * @param {Function} successCallback the callback invoked on success (invoked with the settings)
-                 */
-                load = function load(successCallback, errorCallback) {
-                    normalizedBackingStore.load(function onLoad(settings) {
-                        if (isFunction(successCallback)) {
-                            setTimeout(function onTimeout() {
-                                successCallback.call(null, settings);
-                            }, 0);
-                        }
-                    }, errorCallback);
-                },
-                /**
-                 * Saves values.
-                 *
-                 * @param {Object} settings the settings to save
-                 * @param {Function} successCallback the success callback to invoke on success
-                 */
-                save = function save(settings, successCallback, errorCallback) {
-                    if (!settings) {
-                        if (isFunction(successCallback)) {
-                            setTimeout(function onTimeout() {
-                                successCallback.call(null);
-                            }, 0);
-                        }
-                    } else if (settings && 'object' === typeof settings && !Array.isArray(settings)) {
-                        normalizedBackingStore.save(settings, successCallback, errorCallback);
-                    } else {
-                        if (isFunction(errorCallback)) {
-                            setTimeout(function onTimeout() {
-                                errorCallback.call(null);
-                            }, 0);
-                        }
-                    }
-                },
-                /**
-                 * Clears values.
-                 *
-                 * @param {Function} successCallback the success callback to invoke on success
-                 */
-                clear = function clear(successCallback, errorCallback) {
-                    normalizedBackingStore.clear(successCallback, errorCallback);
-                };
+    /**
+     * Creates a SettingsManager instance backed by an optional store.
+     *
+     * @param {Store} [backingStore] optional store implementation to use
+     */
+    constructor(backingStore) {
+        this.backingStore = backingStore || new InMemoryStore();
+    }
 
-            return {
-                load: load,
-                save: save,
-                clear: clear
-            };
+    /**
+     * Loads values.
+     *
+     * @param {Function} [successCallback] the callback invoked on success (invoked with the settings)
+     * @param {Function} [errorCallback] the error callback, invoked on failure
+     */
+    load(successCallback, errorCallback) {
+        this.backingStore.load(function onLoad(settings) {
+            execute(successCallback, [settings], this.backingStore);
+        }, errorCallback);
+    };
 
-        };
+    /**
+     * Saves values.
+     *
+     * @param {Object} settings the settings to save
+     * @param {Function} [successCallback] the callback invoked on success
+     * @param {Function} [errorCallback] the error callback, invoked on failure
+     */
+    save(settings, successCallback, errorCallback) {
+        if (!settings) {
+            executeAsync(successCallback, [{}]);
+        } else if (isObject(settings)) {
+            execute(this.backingStore.save, [settings, successCallback, errorCallback], this.backingStore);
+        } else {
+            executeAsync(errorCallback, ['"settings" is not an object']);
+        }
+    };
 
-    // Place the version as a member in the function
-    SettingsManager.version = '${build.version}';
+    /**
+     * Clears values.
+     *
+     * @param {Function} successCallback the success callback to invoke on success
+     * @param {Function} [errorCallback] the error callback, invoked on failure
+     */
+    clear(successCallback, errorCallback) {
+        executeAsync(this.backingStore.clear, [successCallback, errorCallback], this.backingStore);
+    };
 
-    return SettingsManager;
-
-});
+}

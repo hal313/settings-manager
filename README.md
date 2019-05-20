@@ -70,14 +70,14 @@ git push --all && git push --tags
 
 Creates a new SettingsManager instance. The optional backing store should implement the same API as SettingsManager, or have an adapter provided. With no backing store specified, an in-memory store will be used.
 
-> load([success][, error])
+> load([success[, error]])
 
 Loads the settings. Takes a success callback and an error callback. The value passed into the settings callback represents the value from the backing store.
 
-> save(settings[, success][, error])
+> save(settings[, success[, error]])
 
 Saves the settings. Requires the settings to save and takes an optional callback for the success or error status.
 
-> clear([success][, error]])
+> clear([success[, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.

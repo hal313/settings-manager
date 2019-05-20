@@ -1,24 +1,52 @@
 {
-  "name": "settings-manager",
-  "version": "1.0.4",
+  "name": "@hal313/settings-manager",
+  "version": "1.0.5",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
+  "main": "dist/SettingsManager.js",
   "bugs": {
     "url": "https://github.com/hal313/settings-manager/issues"
   },
   "license": "MIT",
-  "main": "dist/SettingsManager.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/hal313/settings-manager.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "grunt build",
-    "build:watch": "grunt build:watch",
-    "dist": "grunt dist",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && babel src -d dist",
+    "dist": "npm run build && uglifyjs --compress --mangle --source-map -o dist/SettingsManager.min.js dist/SettingsManager.js",
+    "watch:build": "npm-watch build",
+    "watch:dist": "npm-watch dist",
     "release": "ext/scripts/release.sh --skip-push"
+  },
+  "keywords": [
+    "settings repository",
+    "settings",
+    "javascript"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-transform-modules-umd": "^7.2.0",
+    "@babel/preset-env": "^7.4.4",
+    "auto-changelog": "^1.13.0",
+    "jest": "^24.7.1",
+    "npm-watch": "^0.6.0",
+    "uglify-js": "^3.5.10"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-transform-modules-umd"
+    ],
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "jest": {
     "collectCoverage": true,
@@ -37,27 +65,27 @@
     ],
     "roots": [
       "src",
+      "dist",
       "test"
     ],
-    "resetModules": true
+    "testRegex": [
+      "test/.*-spec.js"
+    ]
   },
   "auto-changelog": {
     "unreleased": false,
     "commitLimit": false
   },
-  "keywords": [
-    "settings repository",
-    "settings",
-    "javascript"
-  ],
-  "devDependencies": {
-    "auto-changelog": "^1.13.0",
-    "grunt": "^1.0.4",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^2.1.0",
-    "grunt-contrib-uglify": "^4.0.1",
-    "grunt-contrib-watch": "^1.1.0",
-    "jest": "^24.7.1",
-    "jshint-stylish": "^2.2.1"
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ]
+    },
+    "dist": {
+      "patterns": [
+        "src"
+      ]
+    }
   }
 }

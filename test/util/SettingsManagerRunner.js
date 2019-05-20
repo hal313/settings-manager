@@ -1,224 +1,234 @@
-module.exports = function() {
-    'use strict';
+export function runSpecs(SettingsManager, BackingStore) {
 
-    return {
-        runSpecs: function runSpecs(SettingsManager) {
-            var settingsManager;
+    let settingsManager;
+    let backingStore;
 
-            beforeEach(function() {
-                settingsManager = new SettingsManager();
+    beforeEach(() => {
+        backingStore = new BackingStore();
+        settingsManager = new SettingsManager(backingStore);
+    });
+
+    describe('Lifecycle', () => {
+
+        it('should exist as a function', () => {
+            expect(SettingsManager).toEqual(expect.any(Function));
+        });
+
+    });
+
+    describe('API', () => {
+
+        describe('load()', () => {
+
+            it('should return the empty object when no settings are provided', () => {
+                return new Promise(resolve => {
+                    settingsManager.load(settings => {
+                        expect(settings).toEqual({});
+                        resolve();
+                    });
+                });
             });
 
-            // A mock backing store (to test delegation)
-            var BackingStore = function() {
+            it('should return the correct settings', () => {
+                return new Promise(resolve => {
+                    let savedSettings = {
+                        one: '1',
+                        child: {
+                            one: 'won'
+                        }
+                    };
 
-                var _load = function(successCallback) {
-                    successCallback();
-                };
-
-                var _save = function(settings, successCallback) {
-                    successCallback();
-                };
-
-                var _clear = function(successCallback) {
-                    successCallback();
-                };
-
-                return {
-                    load: _load,
-                    save: _save,
-                    clear: _clear
-                };
-            };
-
-            describe('Lifecycle', function() {
-
-                test('exists as a global', function () {
-                    expect(SettingsManager).toEqual(expect.any(Function));
+                    settingsManager.save(savedSettings, () => {
+                        settingsManager.load(settings => {
+                            expect(settings).toEqual(savedSettings);
+                            resolve();
+                        });
+                    });
                 });
-
-                test('has a version', function () {
-                    expect(SettingsManager.version).toEqual(expect.any(String));
-                });
-
             });
 
-            describe('API', function() {
+        });
 
-                // Backing store
+        describe('save()', () => {
 
-                describe('load()', function() {
+            it('should save settings', () => {
+                return new Promise(resolve => {
+                    let savedSettings = {
+                        one: '1',
+                        child: {
+                            one: 'won'
+                        }
+                    };
 
-                    test('returns the empty object when no settings are provided', function(done) {
-                        settingsManager.load(function(settings) {
+                    settingsManager.save(savedSettings, () => {
+                        settingsManager.load(settings => {
+                            expect(settings).toEqual(savedSettings);
+                            resolve();
+                        });
+                    });
+                });
+            });
+
+            it('should merge settings correctly', () => {
+                return new Promise(resolve => {
+                    let originalSettings = {
+                        one: '1',
+                        child: {
+                            one: 'won'
+                        }
+                    };
+                    let overrideSettings = {
+                        child: {
+                            one: 'one',
+                            two: 'two'
+                        }
+                    };
+                    let resultantSettings = {
+                        one: '1',
+                        child: {
+                            one: 'one',
+                            two: 'two'
+                        }
+                    };
+
+                    settingsManager.save(originalSettings, () => {
+                        settingsManager.save(overrideSettings, () => {
+                            settingsManager.load(settings => {
+                                expect(settings).toEqual(resultantSettings);
+                                resolve();
+                            });
+                        });
+
+                    });
+                });
+            });
+
+            it('should handle no settings passed in', () => {
+                return new Promise(resolve => {
+                    settingsManager.save(null, () => {
+                        settingsManager.load(settings => {
                             expect(settings).toEqual({});
-                            done();
+                            resolve();
                         });
                     });
-
-                    test('returns the correct settings', function(done) {
-                        var _settings = {
-                            one: '1',
-                            child: {
-                                one: 'won'
-                            }
-                        };
-
-                        settingsManager.save(_settings, function() {
-                            settingsManager.load(function(settings) {
-                                expect(settings).toEqual(_settings);
-                                done();
-                            });
-                        });
-                    });
-
                 });
-
-                describe('save()', function() {
-
-                    test('saves settings', function(done) {
-                        var _settings = {
-                            one: '1',
-                            child: {
-                                one: 'won'
-                            }
-                        };
-
-                        settingsManager.save(_settings, function() {
-                            settingsManager.load(function(settings) {
-                                expect(settings).toEqual(_settings);
-                                done();
-                            });
-                        });
-                    });
-
-                    test('merges settings correctly', function(done) {
-                        var _originalSettings = {
-                            one: '1',
-                            child: {
-                                one: 'won'
-                            }
-                        };
-                        var _overrideSettings = {
-                            child: {
-                                one: 'one',
-                                two: 'two'
-                            }
-                        };
-                        var _resultantSettings = {
-                            one: '1',
-                            child: {
-                                one: 'one',
-                                two: 'two'
-                            }
-                        };
-
-                        settingsManager.save(_originalSettings, function() {
-                            settingsManager.save(_overrideSettings, function() {
-                                settingsManager.load(function(settings) {
-                                    expect(settings).toEqual(_resultantSettings);
-                                    done();
-                                });
-                            });
-
-                        });
-                    });
-
-                    test('handles no settings passed in', function(done) {
-                        settingsManager.save(null, function() {
-                            settingsManager.load(function(settings) {
-                                expect(settings).toEqual({});
-                                done();
-                            });
-                        });
-                    });
-
-                    test('handles empty settings passed in', function(done) {
-                        settingsManager.save({}, function() {
-                            settingsManager.load(function(settings) {
-                                expect(settings).toEqual({});
-                                done();
-                            });
-                        });
-                    });
-
-                    test('handles string passed in', function(done) {
-                        settingsManager.save('test', null, function() {
-                            // Check that the error callback is being invoked
-                            done();
-                        });
-                    });
-
-                    test('handles number passed in', function(done) {
-                        settingsManager.save(4, null, function() {
-                            // Check that the error callback is being invoked
-                            done();
-                        });
-                    });
-
-                    test('handles array passed in', function(done) {
-                        settingsManager.save([1, 2, 3], null, function() {
-                            // Check that the error callback is being invoked
-                            done();
-                        });
-                    });
-
-                });
-
-                describe('clear()', function() {
-
-                    test('clears settings', function(done) {
-                        var _originalSettings = {
-                            one: '1',
-                            child: {
-                                one: 'won'
-                            }
-                        };
-
-                        settingsManager.save(_originalSettings, function() {
-                            settingsManager.clear(function() {
-                                settingsManager.load(function(settings) {
-                                    expect(settings).toEqual({});
-                                    done();
-                                });
-                            });
-
-                        });
-                    });
-
-                });
-
             });
 
-            describe('Backing Store', function() {
-
-                test('invokes backing store save()', function(done) {
-                    var settingsManager = new SettingsManager(new BackingStore());
-
-                    settingsManager.save(null, function() {
-                        done();
+            it('should handle empty settings passed in', () => {
+                return new Promise(resolve => {
+                    settingsManager.save({}, () => {
+                        settingsManager.load(settings => {
+                            expect(settings).toEqual({});
+                            resolve();
+                        });
                     });
                 });
-
-                test('invokes backing store load()', function(done) {
-                    var settingsManager = new SettingsManager(new BackingStore());
-
-                    settingsManager.load(function() {
-                        done();
-                    });
-                });
-
-                test('invokes backing store clear()', function(done) {
-                    var settingsManager = new SettingsManager(new BackingStore());
-
-                    settingsManager.clear(function() {
-                        done();
-                    });
-                });
-
             });
 
-        }
-    };
+            it('should invoke the error callback when a non-object is passed in', () => {
+                return new Promise(resolve => {
+                    let successCallback = jest.fn();
+                    settingsManager.save('test', successCallback, () => {
+                        expect(successCallback).not.toHaveBeenCalled();
+                        resolve();
+                    });
+                });
+            });
+
+            it('should invoke the error callback when a number passed in', () => {
+                return new Promise(resolve => {
+                    let successCallback = jest.fn();
+                    settingsManager.save(4, successCallback, () => {
+                        expect(successCallback).not.toHaveBeenCalled();
+                        resolve();
+                    });
+                });
+            });
+
+            it('should invoke the error callback when an array is passed in', () => {
+                return new Promise(resolve => {
+                    let successCallback = jest.fn();
+                    settingsManager.save([1, 2, 3], successCallback, () => {
+                        expect(successCallback).not.toHaveBeenCalled();
+                        resolve();
+                    });
+                });
+            });
+
+        });
+
+        describe('clear()', () => {
+
+            it('clears settings', () => {
+                return new Promise(resolve => {
+                    let originalSettings = {
+                        one: '1',
+                        child: {
+                            one: 'won'
+                        }
+                    };
+
+                    settingsManager.save(originalSettings, () => {
+                        settingsManager.clear(() => {
+                            settingsManager.load(settings => {
+                                expect(settings).toEqual({});
+                                resolve();
+                            });
+                        });
+                    });
+                });
+            });
+
+        });
+
+    });
+
+    describe('Backing Store', () => {
+
+        it('should not invoke backingStore.save() when no settings are passed in', () => {
+            return new Promise(resolve => {
+                spyOn(backingStore, 'save').and.callThrough();
+
+                settingsManager.save(null, () => {
+                    expect(backingStore.save).not.toHaveBeenCalled();
+                    resolve();
+                });
+            });
+        });
+
+        it('should invoke backingStore.save() when settings are passed in', () => {
+            return new Promise(resolve => {
+                spyOn(backingStore, 'save').and.callThrough();
+
+                settingsManager.save({}, () => {
+                    expect(backingStore.save).toHaveBeenCalled();
+                    resolve();
+                });
+            });
+        });
+
+        it('should invoke backingStore.load()', () => {
+            return new Promise(resolve => {
+                spyOn(backingStore, 'load').and.callThrough();
+
+                settingsManager.load(() => {
+                    expect(backingStore.load).toHaveBeenCalled();
+                    resolve();
+                });
+            });
+        });
+
+        it('should invoke backingStore.clear()', () => {
+            return new Promise(resolve => {
+                spyOn(backingStore, 'clear').and.callThrough();
+
+                settingsManager.clear(() => {
+                    expect(backingStore.clear).toHaveBeenCalled();
+                    resolve();
+                });
+            });
+        });
+
+    });
 
 };

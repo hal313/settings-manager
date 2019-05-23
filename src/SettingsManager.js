@@ -172,9 +172,6 @@ export class InMemoryStore {
  */
 export class SettingsManager {
 
-    // The backing store to use
-    // backingStore;
-
     /**
      * Creates a SettingsManager instance backed by an optional store.
      *

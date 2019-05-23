@@ -3,7 +3,7 @@
 > A facade for user settings repositories.
 
 [![Build Status](http://img.shields.io/travis/hal313/settings-manager/master.svg?style=flat-square)](https://travis-ci.org/hal313/settings-manager)
-[![NPM version](http://img.shields.io/npm/v/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
+[![NPM version](http://img.shields.io/npm/v/@hal313/settings-manager.svg?style=flat-square)](https://www.npmjs.com/package/settings-manager)
 [![Dependency Status](http://img.shields.io/david/hal313/settings-manager.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager)
 
 ## Introduction
@@ -81,3 +81,17 @@ Saves the settings. Requires the settings to save and takes an optional callback
 > clear([success[, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.
+
+## Importing
+
+Depending on your environment, you may incorporate the SettingsManager:
+
+| Style | File                      | Import Statement                                             | Instantiate                                       |
+| ----- | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| ES5   | `dist/SettingsManager.js` | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager();`    |
+| ES6   | `src/SettingsManager.js`  | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                 |
+| Node  | N/A                       | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();` |
+
+## Examples
+
+Look in the `examples` directory for examples on importing and usage.

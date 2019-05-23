@@ -227,9 +227,6 @@
   var SettingsManager =
   /*#__PURE__*/
   function () {
-    // The backing store to use
-    // backingStore;
-
     /**
      * Creates a SettingsManager instance backed by an optional store.
      *

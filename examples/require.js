@@ -1,4 +1,6 @@
 // require the SettingsManager
+// In a node environment, the code below would be:
+//   let SettingsManager = require('@hal313/settings-manager').SettingsManager;
 let SettingsManager = require('../dist/SettingsManager').SettingsManager;
 
 // Create an instance of the SettingsManager

@@ -81,3 +81,17 @@ Saves the settings. Requires the settings to save and takes an optional callback
 > clear([success[, error]])
 
 Clears the settings. Takes an optional callback for the success or error status.
+
+## Importing
+
+Depending on your environment, you may incorporate the SettingsManager:
+
+| Style | File                      | Import Statement                                             | Instantiate                                       |
+| ----- | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| ES5   | `dist/SettingsManager.js` | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager();`    |
+| ES6   | `src/SettingsManager.js`  | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                 |
+| Node  | N/A                       | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();` |
+
+## Examples
+
+Look in the `examples` directory for examples on importing and usage.

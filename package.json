@@ -26,7 +26,7 @@
     "watch:build": "npm-watch build",
     "watch:dist": "npm-watch dist",
     "watch:develop": "npm-watch develop",
-    "release": "ext/scripts/release.sh --skip-push --"
+    "release": "ext/scripts/release.sh --skip-push"
   },
   "keywords": [
     "settings repository",

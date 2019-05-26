@@ -19,11 +19,14 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "clean": "rm -rf dist",
-    "build": "npm run clean && babel src -d dist",
+    "build": "npm run clean && babel src -d dist && cp src/SettingsManager.js dist/SettingsManager.es6.js",
     "dist": "npm run build && uglifyjs --compress --mangle --source-map -o dist/SettingsManager.min.js dist/SettingsManager.js",
+    "develop": "npm run dist && npm test",
+    "site": "npm run dist && cp dist/* docs/scripts",
     "watch:build": "npm-watch build",
     "watch:dist": "npm-watch dist",
-    "release": "ext/scripts/release.sh --skip-push"
+    "watch:develop": "npm-watch develop",
+    "release": "ext/scripts/release.sh --skip-push --"
   },
   "keywords": [
     "settings repository",

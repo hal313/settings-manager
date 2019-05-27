@@ -10,6 +10,8 @@
 
 This is intended as a generic interface to an asynchronous setting API. Using this library allows for abstraction of the underlying settings. This package was intended for plugin development in order to make plugins portable across platforms.
 
+See an [example](https://hal313.github.io/settings-manager-example/).
+
 ## API
 
 > new SettingsManager([backing_store])

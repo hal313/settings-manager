@@ -86,12 +86,14 @@ Clears the settings. Takes an optional callback for the success or error status.
 
 Depending on your environment, you may incorporate the SettingsManager:
 
-| Style | File                      | Import Statement                                             | Instantiate                                       |
-| ----- | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| ES5   | `dist/SettingsManager.js` | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager();`    |
-| ES6   | `src/SettingsManager.js`  | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                 |
-| Node  | N/A                       | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();` |
+| Style | File                     | Import Statement                                             | Instantiate                                                    |
+| ----- | ------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| ES5   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| CJS   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| AMD   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| ES6   | `SettingsManager.es6.js` | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                              |
+| Node  | N/A                      | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();`              |
 
 ## Examples
 
-Look in the `examples` directory for examples on importing and usage.
+Look in the `docs` directory for examples on importing and usage.

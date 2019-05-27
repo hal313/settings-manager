@@ -1,4 +1,7 @@
-let settingsManager = new SettingsManager.SettingsManager();
+// Load the module
+var SettingsManager = require('../../scripts/SettingsManager');
+
+var settingsManager = new SettingsManager.SettingsManager();
 
 // Start with a load
 settingsManager.load(function onLoad(settings) {
@@ -27,20 +30,17 @@ settingsManager.load(function onLoad(settings) {
 let resultsElement = document.getElementById('js-results-section');
 // Handlers
 function onSettingsLoaded(settings) {
-    console.log('loaded', settings);
-    let element = document.createElement('div');
-    element.append(document.createTextNode('loaded'));
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`loaded: ${JSON.stringify(settings, null, 2)}\n`));
     resultsElement.append(element);
 }
 function onSettingsSaved() {
-    console.log('settings saved');
-    let element = document.createElement('div');
-    element.append(document.createTextNode('saved'));
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`saved\n`));
     resultsElement.append(element);
 }
 function onError(error) {
-    console.log('error:', error);
-    let element = document.createElement('div');
-    element.append(document.createTextNode(`error: ${error}`));
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`error: ${error}\n`));
     resultsElement.append(element);
 }

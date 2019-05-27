@@ -1,9 +1,5 @@
-// require the SettingsManager
-// In a node environment, the code below would be:
-//   let SettingsManager = require('@hal313/settings-manager').SettingsManager;
-let SettingsManager = require('../dist/SettingsManager').SettingsManager;
+import { SettingsManager } from '../../scripts/SettingsManager.es6.js';
 
-// Create an instance of the SettingsManager
 let settingsManager = new SettingsManager();
 
 // Start with a load
@@ -28,13 +24,22 @@ settingsManager.load(function onLoad(settings) {
     }, onError);
 }, onError);
 
-// Handler functions
+
+// The results element
+let resultsElement = document.getElementById('js-results-section');
+// Handlers
 function onSettingsLoaded(settings) {
-    console.log('loaded', settings);
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`loaded: ${JSON.stringify(settings, null, 2)}\n`));
+    resultsElement.append(element);
 }
 function onSettingsSaved() {
-    console.log('settings saved');
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`saved\n`));
+    resultsElement.append(element);
 }
 function onError(error) {
-    console.log('error:', error);
+    let element = document.createElement('code');
+    element.append(document.createTextNode(`error: ${error}\n`));
+    resultsElement.append(element);
 }

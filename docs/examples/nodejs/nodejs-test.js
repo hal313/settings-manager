@@ -1,5 +1,7 @@
-import { SettingsManager } from '../src/SettingsManager.js';
+// Get the SettingsManager
+let SettingsManager = require('@hal313/settings-manager').SettingsManager;
 
+// Create an instance of the SettingsManager
 let settingsManager = new SettingsManager();
 
 // Start with a load
@@ -24,25 +26,13 @@ settingsManager.load(function onLoad(settings) {
     }, onError);
 }, onError);
 
-
-// The results element
-let resultsElement = document.getElementById('js-results-section');
-// Handlers
+// Handler functions
 function onSettingsLoaded(settings) {
     console.log('loaded', settings);
-    let element = document.createElement('div');
-    element.append(document.createTextNode('loaded'));
-    resultsElement.append(element);
 }
 function onSettingsSaved() {
     console.log('settings saved');
-    let element = document.createElement('div');
-    element.append(document.createTextNode('saved'));
-    resultsElement.append(element);
 }
 function onError(error) {
     console.log('error:', error);
-    let element = document.createElement('div');
-    element.append(document.createTextNode(`error: ${error}`));
-    resultsElement.append(element);
 }

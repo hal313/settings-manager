@@ -1,6 +1,6 @@
 {
   "name": "@hal313/settings-manager",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A package for abstracting settings repositories",
   "homepage": "https://github.com/hal313/settings-manager",
   "main": "dist/SettingsManager.js",

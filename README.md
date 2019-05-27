@@ -10,6 +10,40 @@
 
 This is intended as a generic interface to an asynchronous setting API. Using this library allows for abstraction of the underlying settings. This package was intended for plugin development in order to make plugins portable across platforms.
 
+## API
+
+> new SettingsManager([backing_store])
+
+Creates a new SettingsManager instance. The optional backing store should implement the same API as SettingsManager, or have an adapter provided. With no backing store specified, an in-memory store will be used.
+
+> load([success[, error]])
+
+Loads the settings. Takes a success callback and an error callback. The value passed into the settings callback represents the value from the backing store.
+
+> save(settings[, success[, error]])
+
+Saves the settings. Requires the settings to save and takes an optional callback for the success or error status.
+
+> clear([success[, error]])
+
+Clears the settings. Takes an optional callback for the success or error status.
+
+## Importing
+
+Depending on your environment, you may incorporate the SettingsManager:
+
+| Style | File                     | Import Statement                                             | Instantiate                                                    |
+| ----- | ------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| ES5   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| CJS   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| AMD   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
+| ES6   | `SettingsManager.es6.js` | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                              |
+| Node  | N/A                      | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();`              |
+
+## Examples
+
+The [GitHub Pages](https://hal313.github.io/settings-manager/) documentation illustrates several examples.
+
 ## Setup
 
 ```bash
@@ -63,37 +97,3 @@ Releases to the NPM registry are handled by Travis CI. Pushing `master` to GitHu
 ```bash
 git push --all && git push --tags
 ```
-
-## API
-
-> new SettingsManager([backing_store])
-
-Creates a new SettingsManager instance. The optional backing store should implement the same API as SettingsManager, or have an adapter provided. With no backing store specified, an in-memory store will be used.
-
-> load([success[, error]])
-
-Loads the settings. Takes a success callback and an error callback. The value passed into the settings callback represents the value from the backing store.
-
-> save(settings[, success[, error]])
-
-Saves the settings. Requires the settings to save and takes an optional callback for the success or error status.
-
-> clear([success[, error]])
-
-Clears the settings. Takes an optional callback for the success or error status.
-
-## Importing
-
-Depending on your environment, you may incorporate the SettingsManager:
-
-| Style | File                     | Import Statement                                             | Instantiate                                                    |
-| ----- | ------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| ES5   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
-| CJS   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
-| AMD   | `SettingsManager.js`     | `<script src="SettingsManager.js"></script>`                 | `var settingsManager = new SettingsManager.SettingsManager();` |
-| ES6   | `SettingsManager.es6.js` | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                              |
-| Node  | N/A                      | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();`              |
-
-## Examples
-
-Look in the `docs` directory for examples on importing and usage.

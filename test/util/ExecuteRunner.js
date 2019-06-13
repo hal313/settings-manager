@@ -2,25 +2,31 @@ export function runSpecs(execute) {
 
     describe('execute', () => {
 
-        it('should not run a non-function without failing', () => {
-            expect(execute(undefined)).toBe(null);
-            expect(execute(null)).toBe(null);
-            expect(execute({})).toBe(null);
-            expect(execute(-2)).toBe(null);
-            expect(execute(0)).toBe(null);
-            expect(execute(2)).toBe(null);
-            expect(execute(true)).toBe(null);
-            expect(execute(false)).toBe(null);
-            expect(execute('')).toBe(null);
-            expect(execute('some string')).toBe(null);
+        describe('should not run a non-function without failing', () => {
+
+            [
+                null, undefined,
+                true, false,
+                Number.MIN_VALUE, Number.MAX_VALUE, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY,
+                -10.1, 1, 0, 1, 10.1,
+                'test', '',
+                {},
+                ['test', true]
+            ].forEach(value => {
+
+                it(`should not run a non-function without failing (${value})`, () => {
+                    return execute(value)
+                    .then(result => expect(result).toBe(undefined));
+                });
+
+            });
         });
 
         it('should run the specified function', () => {
             let fn = jest.fn();
 
-            execute(fn);
-
-            expect(fn).toHaveBeenCalled();
+            return execute(fn)
+            .then(() => expect(fn).toHaveBeenCalled());
         });
 
         it('should run with the specified arguments', () => {
@@ -30,7 +36,8 @@ export function runSpecs(execute) {
                 expect(Array.from(arguments)).toEqual(args);
             });
 
-            execute(fn, args);
+            return execute(fn, args)
+            .then(() => expect(fn).toHaveBeenCalled());
         });
 
         it('should run with the specified context', () => {
@@ -41,7 +48,8 @@ export function runSpecs(execute) {
                 expect(this).toEqual(context);
             });
 
-            execute(fn, null, context);
+            return execute(fn, null, context)
+            .then(() => expect(fn).toHaveBeenCalled());
         });
 
         it('should run with the specified arguments and context', () => {
@@ -54,7 +62,16 @@ export function runSpecs(execute) {
                 expect(this).toEqual(context);
             });
 
-            execute(fn, args, context);
+            return execute(fn, args, context)
+            .then(() => expect(fn).toHaveBeenCalled());
+        });
+
+        it('should reject when the function throws an error', () => {
+            let fn = jest.fn(() => {throw 'error!'});
+
+            return execute(fn)
+            .then(() => fail('should not call then'))
+            .catch(() => expect(fn).toHaveBeenCalled());
         });
 
     });

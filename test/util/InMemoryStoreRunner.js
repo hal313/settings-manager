@@ -9,48 +9,33 @@ export function runSpecs(InMemoryStore) {
         });
 
         it('should load empty settings when there are no settings', () => {
-            return new Promise(resolve => {
-                inMemoryStore.load(settings => {
-                    expect(settings).toEqual({});
-                    resolve();
-                });
-            });
+            return inMemoryStore.load()
+            .then(settings => expect(settings).toEqual({}));
         });
 
         it('should load the correct settings when settings have been saved', () => {
-            return new Promise(resolve => {
-                inMemoryStore.load(settings => {
-                    expect(settings).toEqual({});
+            let savedSettings = {one: 1};
 
-                    let savedSettings = {one: 1};
-
-                    inMemoryStore.save(savedSettings, settings => {
-                        expect(settings).toEqual(savedSettings);
-                        resolve();
-                    });
-                });
-            });
+            return inMemoryStore.load()
+            .then(settings => expect(settings).toEqual({}))
+            .then(() => inMemoryStore.save(savedSettings))
+            .then(settings => expect(settings).toEqual(savedSettings))
+            .then(() => inMemoryStore.load())
+            .then(settings => expect(settings).toEqual(savedSettings));
         });
 
         it('should clear settings', () => {
-            return new Promise(resolve => {
-                inMemoryStore.load(settings => {
-                    expect(settings).toEqual({});
+            let savedSettings = {one: 1};
 
-                    let savedSettings = {one: 1};
-
-                    inMemoryStore.save(savedSettings, settings => {
-                        expect(settings).toEqual(savedSettings);
-
-                        inMemoryStore.clear(() => {
-                            inMemoryStore.load(settings => {
-                                expect(settings).toEqual({});
-                                resolve();
-                            });
-                        });
-                    });
-                });
-            });
+            return inMemoryStore.load()
+            .then(settings => expect(settings).toEqual({}))
+            .then(() => inMemoryStore.save(savedSettings))
+            .then(settings => expect(settings).toEqual(savedSettings))
+            .then(() => inMemoryStore.load())
+            .then(settings => expect(settings).toEqual(savedSettings))
+            .then(() => inMemoryStore.clear())
+            .then(() => inMemoryStore.load())
+            .then(settings => expect(settings).toEqual({}));
         });
 
     });

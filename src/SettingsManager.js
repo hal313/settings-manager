@@ -87,40 +87,22 @@ export function merge(target, source) {
  * @returns {*} the return value of the function execution, or null if no function is provided
  */
 export function execute(fn, args, context) {
-    if (isFunction(fn)) {
-        return fn.apply(context || {}, args);
-    }
-    return null;
-}
-
-/**
- * Executes a function asynchronously.
- *
- * @param {Function} fn the function to execute
- * @param {*[]} args an array of arguments to execute the function with
- * @param {Object} [context] the optional context
- */
-export function executeAsync(fn, args, context) {
-    if (isFunction(fn)) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                try {
-                    resolve(fn.apply(context || {}, args));
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        });
-    }
-    return null;
+    return new Promise((resolve, reject) => {
+        if (isFunction(fn)) {
+            try {
+                resolve(fn.apply(context || {}, args))
+            } catch (error) {
+                reject(error);
+            }
+        }
+        resolve();
+    });
 }
 
 /**
  * A store implementation in memory.
  */
 export class InMemoryStore {
-
-    //this.settings = {};
 
     /**
      * Creates an instance.
@@ -132,35 +114,35 @@ export class InMemoryStore {
     /**
      * Loads values.
      *
-     * @param {Function} successCallback the callback invoked on success (with parameter {})
+     * @returns {Promise} resolves with the settings
      */
-    load(successCallback) {
-        executeAsync(successCallback, [merge({}, this.settings)]);
+    load() {
+        return Promise.resolve(merge({}, this.settings));
     };
 
     /**
      * Saves values.
      *
      * @param {Object} settings the settings to save
-     * @param {Function} successCallback the success callback to invoke on success
+     * @returns {Promise} resolves with the settings
      */
-    save(settings, successCallback) {
+    save(settings) {
         // Assign the settings
         this.settings = merge(this.settings, settings);
 
         // Invoke the callback
-        executeAsync(successCallback, [merge({}, this.settings)]);
+        return Promise.resolve(merge({}, this.settings));
     };
 
     /**
      * Clears values.
      *
-     * @param {Function} successCallback the success callback to invoke on success
+     * @returns {Promise} resolves with empty settings
      */
-    clear(successCallback) {
+    clear() {
         this.settings = {};
 
-        executeAsync(successCallback, [{}]);
+        return Promise.resolve({});
     };
 
 };
@@ -186,11 +168,10 @@ export class SettingsManager {
      *
      * @param {Function} [successCallback] the callback invoked on success (invoked with the settings)
      * @param {Function} [errorCallback] the error callback, invoked on failure
+     * @returns {Promise} always resolves (never rejects) after the callback has been invoked
      */
     load(successCallback, errorCallback) {
-        this.backingStore.load(function onLoad(settings) {
-            execute(successCallback, [settings], this.backingStore);
-        }, errorCallback);
+        return cleanBackingStoreFunctionPromise(this.backingStore.load(), successCallback, errorCallback);
     };
 
     /**
@@ -199,14 +180,13 @@ export class SettingsManager {
      * @param {Object} settings the settings to save
      * @param {Function} [successCallback] the callback invoked on success
      * @param {Function} [errorCallback] the error callback, invoked on failure
+     * @returns {Promise} always resolves (never rejects) after the callback has been invoked
      */
     save(settings, successCallback, errorCallback) {
-        if (!settings) {
-            executeAsync(successCallback, [{}]);
-        } else if (isObject(settings)) {
-            execute(this.backingStore.save, [settings, successCallback, errorCallback], this.backingStore);
+        if (!settings || !isObject(settings)) {
+            return cleanPromise(execute(errorCallback, ['"settings" is not an object']));
         } else {
-            executeAsync(errorCallback, ['"settings" is not an object']);
+            return cleanBackingStoreFunctionPromise(this.backingStore.save(settings), successCallback, errorCallback);
         }
     };
 
@@ -215,9 +195,34 @@ export class SettingsManager {
      *
      * @param {Function} successCallback the success callback to invoke on success
      * @param {Function} [errorCallback] the error callback, invoked on failure
+     * @returns {Promise} resolves
      */
     clear(successCallback, errorCallback) {
-        executeAsync(this.backingStore.clear, [successCallback, errorCallback], this.backingStore);
+        return cleanBackingStoreFunctionPromise(this.backingStore.clear(), successCallback, errorCallback);
     };
 
+}
+
+
+/**
+ * Cleans a promise by adding a no-op then and a no-op catch.
+ *
+ * @param {Promise} promise the promise to clean
+ * @return {Promise} a promise which always resolves nothing
+ */
+function cleanPromise(promise) {
+    return promise.then(() => {}).catch(() => {});
+}
+
+/**
+ * Cleans a promise from a backing store call and invokes the correct callback.
+ *
+ * @param {Promise} backingStorePromise the promise from the backing store function
+ * @param {Function} [successCallback] the success callback (invoked with the result from the backing store function)
+ * @param {Function} [errorCallback] the error callback (invoked with the error from the backing store function)
+ */
+function cleanBackingStoreFunctionPromise(backingStorePromise, successCallback, errorCallback) {
+    return backingStorePromise
+    .then(result => cleanPromise(execute(successCallback, [result])))
+    .catch(error => cleanPromise(execute(errorCallback, [error])));
 }

@@ -12,7 +12,9 @@ This is intended as a generic interface to an asynchronous setting API. Using th
 
 See an [example](https://hal313.github.io/settings-manager-example/).
 
-## API
+## Using
+
+### API
 
 > new SettingsManager([backing_store])
 
@@ -30,7 +32,7 @@ Saves the settings. Requires the settings to save and takes an optional callback
 
 Clears the settings. Takes an optional callback for the success or error status.
 
-## Importing
+### Importing
 
 Depending on your environment, you may incorporate the SettingsManager:
 
@@ -42,11 +44,13 @@ Depending on your environment, you may incorporate the SettingsManager:
 | ES6   | `SettingsManager.es6.js` | `import { SettingsManager } from 'SettingsManager.js';`      | `let sm = new SettingsManager();`                              |
 | Node  | N/A                      | `let SettingsManager = require('@hal313/settings-manager');` | `let sm = new SettingsManager.SettingsManager();`              |
 
-## Examples
+### Examples
 
 The [GitHub Pages](https://hal313.github.io/settings-manager/) documentation illustrates several examples.
 
-## Setup
+## Developing
+
+### Setup
 
 ```bash
 npm install
@@ -54,7 +58,7 @@ npm install
 
 ### Building
 
-A build will check the source code and place code in the build\dist folder.
+A build will check the source code and place code in the `dist` directory.
 
 ```bash
 npm run build
@@ -63,10 +67,10 @@ npm run build
 To run a build on source code changes:
 
 ```bash
-npm run build:watch
+npm run watch:build
 ```
 
-To build distributable artifacts (which includes a minimized version as well as burning in build-time data):
+To build distributable artifacts (which includes a minimized version):
 
 ```bash
 npm run dist
@@ -86,7 +90,7 @@ To run tests against the source code and dist folder (including coverage), with 
 npm run test:watch
 ```
 
-## Build a Release
+### Build a Release
 
 This is a basic script which can be used to build and deploy (to NPM) the project.
 

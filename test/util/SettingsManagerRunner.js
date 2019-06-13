@@ -21,30 +21,32 @@ export function runSpecs(SettingsManager, BackingStore) {
         describe('load()', () => {
 
             it('should return the empty object when no settings are provided', () => {
-                return new Promise(resolve => {
-                    settingsManager.load(settings => {
-                        expect(settings).toEqual({});
-                        resolve();
-                    });
-                });
+                let errorCallback = jest.fn();
+
+                return settingsManager.load(
+                    (settings) => expect(settings).toEqual({}),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
             it('should return the correct settings', () => {
-                return new Promise(resolve => {
-                    let savedSettings = {
-                        one: '1',
-                        child: {
-                            one: 'won'
-                        }
-                    };
+                let savedSettings = {
+                    one: '1',
+                    child: {
+                        one: 'won'
+                    }
+                };
+                let errorCallback = jest.fn();
 
-                    settingsManager.save(savedSettings, () => {
-                        settingsManager.load(settings => {
-                            expect(settings).toEqual(savedSettings);
-                            resolve();
-                        });
-                    });
-                });
+                return settingsManager.save(savedSettings,
+                    () => settingsManager.load(
+                        (settings) => expect(settings).toEqual(savedSettings),
+                        errorCallback
+                    ),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
         });
@@ -52,107 +54,70 @@ export function runSpecs(SettingsManager, BackingStore) {
         describe('save()', () => {
 
             it('should save settings', () => {
-                return new Promise(resolve => {
-                    let savedSettings = {
-                        one: '1',
-                        child: {
-                            one: 'won'
-                        }
-                    };
+                let savedSettings = {
+                    one: '1',
+                    child: {
+                        one: 'won'
+                    }
+                };
+                let errorCallback = jest.fn();
 
-                    settingsManager.save(savedSettings, () => {
-                        settingsManager.load(settings => {
-                            expect(settings).toEqual(savedSettings);
-                            resolve();
-                        });
-                    });
-                });
+                return settingsManager.save(savedSettings,
+                    () => settingsManager.load(
+                        (settings) => expect(settings).toEqual(savedSettings),
+                        errorCallback
+                    ),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
             it('should merge settings correctly', () => {
-                return new Promise(resolve => {
-                    let originalSettings = {
-                        one: '1',
-                        child: {
-                            one: 'won'
-                        }
-                    };
-                    let overrideSettings = {
-                        child: {
-                            one: 'one',
-                            two: 'two'
-                        }
-                    };
-                    let resultantSettings = {
-                        one: '1',
-                        child: {
-                            one: 'one',
-                            two: 'two'
-                        }
-                    };
+                let originalSettings = {
+                    one: '1',
+                    child: {
+                        one: 'won'
+                    }
+                };
+                let overrideSettings = {
+                    child: {
+                        one: 'one',
+                        two: 'two'
+                    }
+                };
+                let resultantSettings = {
+                    one: '1',
+                    child: {
+                        one: 'one',
+                        two: 'two'
+                    }
+                };
+                let errorCallback = jest.fn();
 
-                    settingsManager.save(originalSettings, () => {
-                        settingsManager.save(overrideSettings, () => {
-                            settingsManager.load(settings => {
-                                expect(settings).toEqual(resultantSettings);
-                                resolve();
-                            });
-                        });
-
-                    });
-                });
-            });
-
-            it('should handle no settings passed in', () => {
-                return new Promise(resolve => {
-                    settingsManager.save(null, () => {
-                        settingsManager.load(settings => {
-                            expect(settings).toEqual({});
-                            resolve();
-                        });
-                    });
-                });
+                return settingsManager.save(originalSettings,
+                    () => settingsManager.save(overrideSettings,
+                        () => settingsManager.load(
+                            (settings) => expect(settings).toEqual(resultantSettings),
+                            errorCallback
+                        ),
+                        errorCallback
+                    ),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
             it('should handle empty settings passed in', () => {
-                return new Promise(resolve => {
-                    settingsManager.save({}, () => {
-                        settingsManager.load(settings => {
-                            expect(settings).toEqual({});
-                            resolve();
-                        });
-                    });
-                });
-            });
+                let errorCallback = jest.fn();
 
-            it('should invoke the error callback when a non-object is passed in', () => {
-                return new Promise(resolve => {
-                    let successCallback = jest.fn();
-                    settingsManager.save('test', successCallback, () => {
-                        expect(successCallback).not.toHaveBeenCalled();
-                        resolve();
-                    });
-                });
-            });
-
-            it('should invoke the error callback when a number passed in', () => {
-                return new Promise(resolve => {
-                    let successCallback = jest.fn();
-                    settingsManager.save(4, successCallback, () => {
-                        expect(successCallback).not.toHaveBeenCalled();
-                        resolve();
-                    });
-                });
-            });
-
-            it('should invoke the error callback when an array is passed in', () => {
-                return new Promise(resolve => {
-                    let successCallback = jest.fn();
-                    settingsManager.save([1, 2, 3], successCallback, () => {
-                        expect(successCallback).not.toHaveBeenCalled();
-                        resolve();
-                    });
-                });
+                return settingsManager.save({},
+                    () => settingsManager.load(
+                        (settings) => expect(settings).toEqual({}),
+                        errorCallback
+                    ),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
         });
@@ -160,23 +125,25 @@ export function runSpecs(SettingsManager, BackingStore) {
         describe('clear()', () => {
 
             it('clears settings', () => {
-                return new Promise(resolve => {
-                    let originalSettings = {
-                        one: '1',
-                        child: {
-                            one: 'won'
-                        }
-                    };
+                let originalSettings = {
+                    one: '1',
+                    child: {
+                        one: 'won'
+                    }
+                };
+                let errorCallback = jest.fn();
 
-                    settingsManager.save(originalSettings, () => {
-                        settingsManager.clear(() => {
-                            settingsManager.load(settings => {
-                                expect(settings).toEqual({});
-                                resolve();
-                            });
-                        });
-                    });
-                });
+                return settingsManager.save(originalSettings,
+                    () => settingsManager.clear(
+                        () => settingsManager.load(
+                            (settings) => expect(settings).toEqual({}),
+                            errorCallback
+                        ),
+                        errorCallback
+                    ),
+                    errorCallback
+                )
+                .then(() => expect(errorCallback).not.toHaveBeenCalled());
             });
 
         });
@@ -185,48 +152,99 @@ export function runSpecs(SettingsManager, BackingStore) {
 
     describe('Backing Store', () => {
 
-        it('should not invoke backingStore.save() when no settings are passed in', () => {
-            return new Promise(resolve => {
-                spyOn(backingStore, 'save').and.callThrough();
+        describe('Parameter Type Checking', () => {
 
-                settingsManager.save(null, () => {
-                    expect(backingStore.save).not.toHaveBeenCalled();
-                    resolve();
+            [
+                null, undefined,
+                true, false,
+                Number.MIN_VALUE, Number.MAX_VALUE, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY,
+                -10.1, 1, 0, 1, 10.1,
+                'test', '',
+                () => {},
+                ['test', true]
+            ].forEach(value => {
+
+                it(`should not invoke backingStore.save() when a non object is passed in (${value})`, () => {
+                    spyOn(backingStore, 'save').and.callThrough();
+
+                    let successCallback = jest.fn();
+                    let errorCallback = jest.fn();
+
+                    return settingsManager.save(value, successCallback, errorCallback)
+                    .catch(() => {
+                        expect(backingStore.save).not.toHaveBeenCalled()
+                        expect(successCallback).not.toHaveBeenCalled();
+                        expect(errorCallback).toHaveBeenCalled();
+                    });
                 });
+
             });
+
         });
 
-        it('should invoke backingStore.save() when settings are passed in', () => {
-            return new Promise(resolve => {
-                spyOn(backingStore, 'save').and.callThrough();
+        describe('Failing API Support', () => {
 
-                settingsManager.save({}, () => {
-                    expect(backingStore.save).toHaveBeenCalled();
-                    resolve();
+            it('should invoke the error callback when the backing store function fails', () => {
+                let errorMessage = 'failing save()';
+                spyOn(backingStore, 'save').and.returnValue(Promise.reject(errorMessage));
+
+                let successCallback = jest.fn();
+                let errorCallback = jest.fn();
+
+                return settingsManager.save({}, successCallback, errorCallback)
+                .then(() => expect(backingStore.save).toHaveBeenCalled())
+                .then(() => {
+                    expect(successCallback).not.toHaveBeenCalled();
+                    expect(errorCallback).toHaveBeenCalledWith(errorMessage);
                 });
             });
+
         });
 
-        it('should invoke backingStore.load()', () => {
-            return new Promise(resolve => {
+        describe('API', () => {
+
+            it('should invoke backingStore.save() when settings are passed in', () => {
+                spyOn(backingStore, 'save').and.callThrough();
+
+                let successCallback = jest.fn();
+                let errorCallback = jest.fn();
+
+                return settingsManager.save({}, successCallback, errorCallback)
+                .then(() => expect(backingStore.save).toHaveBeenCalled())
+                .then(() => {
+                    expect(successCallback).toHaveBeenCalled();
+                    expect(errorCallback).not.toHaveBeenCalled();
+                });
+            });
+
+            it('should invoke backingStore.load()', () => {
                 spyOn(backingStore, 'load').and.callThrough();
 
-                settingsManager.load(() => {
-                    expect(backingStore.load).toHaveBeenCalled();
-                    resolve();
+                let successCallback = jest.fn();
+                let errorCallback = jest.fn();
+
+                return settingsManager.load(successCallback, errorCallback)
+                .then(() => expect(backingStore.load).toHaveBeenCalled())
+                .then(() => {
+                    expect(successCallback).toHaveBeenCalled();
+                    expect(errorCallback).not.toHaveBeenCalled();
                 });
             });
-        });
 
-        it('should invoke backingStore.clear()', () => {
-            return new Promise(resolve => {
+            it('should invoke backingStore.clear()', () => {
                 spyOn(backingStore, 'clear').and.callThrough();
 
-                settingsManager.clear(() => {
-                    expect(backingStore.clear).toHaveBeenCalled();
-                    resolve();
+                let successCallback = jest.fn();
+                let errorCallback = jest.fn();
+
+                return settingsManager.clear(successCallback, errorCallback)
+                .then(() => expect(backingStore.clear).toHaveBeenCalled())
+                .then(() => {
+                    expect(successCallback).toHaveBeenCalled();
+                    expect(errorCallback).not.toHaveBeenCalled();
                 });
             });
+
         });
 
     });

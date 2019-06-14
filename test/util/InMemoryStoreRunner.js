@@ -38,6 +38,22 @@ export function runSpecs(InMemoryStore) {
             .then(settings => expect(settings).toEqual({}));
         });
 
+        it('should overwrite saved settings', () => {
+            let firstSettings = {one: 1};
+            let secondSettings = {two: 2};
+
+            return inMemoryStore.load()
+            .then(settings => expect(settings).toEqual({}))
+            .then(() => inMemoryStore.save(firstSettings))
+            .then(settings => expect(settings).toEqual(firstSettings))
+            .then(() => inMemoryStore.load())
+            .then(settings => expect(settings).toEqual(firstSettings))
+            .then(() => inMemoryStore.save(secondSettings))
+            .then(settings => expect(settings).toEqual(secondSettings))
+            .then(() => inMemoryStore.load())
+            .then(settings => expect(settings).toEqual(secondSettings));
+        });
+
     });
 
 };

@@ -187,7 +187,7 @@ export class SettingsManager {
         } else {
             return cleanBackingStoreFunctionPromise(
                 // Merge with existing settings
-                this.backingStore.load().then(loadedSettings => this.backingStore.save(merge(loadedSettings, settings))),
+                this.backingStore.load().then(loadedSettings => this.backingStore.save(merge(loadedSettings, settings))).then(() => this.backingStore.load()),
                 successCallback,
                 errorCallback
             );

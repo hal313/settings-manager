@@ -250,6 +250,8 @@
           return cleanBackingStoreFunctionPromise( // Merge with existing settings
           this.backingStore.load().then(function (loadedSettings) {
             return _this.backingStore.save(merge(loadedSettings, settings));
+          }).then(function () {
+            return _this.backingStore.load();
           }), successCallback, errorCallback);
         }
       }

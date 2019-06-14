@@ -185,12 +185,12 @@ export class SettingsManager {
         if (!settings || !isObject(settings)) {
             return cleanPromise(execute(errorCallback, ['"settings" is not an object']));
         } else {
-          return cleanBackingStoreFunctionPromise(
-              // Merge with existing settings
-              this.backingStore.load().then(loadedSettings => this.backingStore.save(merge(loadedSettings, settings))),
-              successCallback,
-              errorCallback
-              );
+            return cleanBackingStoreFunctionPromise(
+                // Merge with existing settings
+                this.backingStore.load().then(loadedSettings => this.backingStore.save(merge(loadedSettings, settings))).then(() => this.backingStore.load()),
+                successCallback,
+                errorCallback
+            );
         }
     };
 
